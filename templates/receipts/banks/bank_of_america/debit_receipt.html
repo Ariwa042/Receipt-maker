@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank of America - Transfer Confirmed</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            background: white;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            background: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: none;
+        }
+
+        .back-arrow {
+            font-size: 28px;
+            color: #0066cc;
+            font-weight: 300;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            border: 3px solid #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px auto;
+        }
+
+        .success-icon::after {
+            content: '✓';
+            color: #4CAF50;
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: -2px;
+        }
+
+        .content {
+            padding: 35px 25px 0 25px;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 300;
+            color: #1a1a1a;
+            margin-bottom: 35px;
+            letter-spacing: -0.3px;
+        }
+
+        .details-section {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0;
+            padding: 20px 5px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-size: 17px;
+            font-weight: 400;
+            color: #1a1a1a;
+            flex: 0 0 130px;
+        }
+
+        .detail-value {
+            flex: 1;
+            text-align: right;
+        }
+
+        .detail-primary {
+            font-size: 17px;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 3px;
+        }
+
+        .detail-secondary {
+            font-size: 15px;
+            color: #8e8e93;
+            font-weight: 400;
+        }
+
+        .amount-value {
+            font-size: 17px;
+            font-weight: 400;
+            color: #1a1a1a;
+        }
+
+        .date-value {
+            font-size: 17px;
+            color: #8e8e93;
+            font-weight: 400;
+        }
+
+        .confirmation-value {
+            font-size: 17px;
+            color: #8e8e93;
+            font-weight: 400;
+        }
+
+        .disclaimer {
+            background: #f8f9fa;
+            padding: 20px 25px 25px 25px;
+            margin: 20px 0 0 0;
+            border-top: 1px solid #e8e8e8;
+        }
+
+        .disclaimer-text {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .disclaimer-text:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="back-arrow">‹</div>
+        </div>
+
+        <div class="content">
+            <div class="success-icon"></div>
+            
+            <h1 class="title">Your transfer is confirmed</h1>
+
+            <div class="details-section">
+                <div class="detail-row">
+                    <div class="detail-label">From</div>
+                    <div class="detail-value">
+                        <div class="detail-primary">Advantage Savings - 3740</div>
+                        <div class="detail-secondary">Available balance $1,076.45</div>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">To</div>
+                    <div class="detail-value">
+                        <div class="detail-primary">BankAmericard Platinum</div>
+                        <div class="detail-primary">Plus Mastercard - 5271</div>
+                        <div class="detail-secondary">Current balance $220.90</div>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Amount</div>
+                    <div class="detail-value">
+                        <div class="amount-value">$280.00</div>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Date</div>
+                    <div class="detail-value">
+                        <div class="date-value">Feb 14</div>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Confirmation #</div>
+                    <div class="detail-value">
+                        <div class="confirmation-value">0186286595</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <div class="disclaimer-text">
+                Please make sure there are sufficient funds in the account from which you are transferring money in order to avoid a possible fee. For details, refer to your account agreement and applicable fee schedule.
+            </div>
+            <div class="disclaimer-text">
+                A note to our credit card customers: To avoid late fees and additional interest charges, please make sure your payment covers at least your Total Minimum Payment Due and is made by the due date. Payments made after your due date, but before the receipt of your next bill, will be applied to the current bill.
+            </div>
+            <div class="disclaimer-text">
+                Savings accounts have a limit on withdrawals and transfers of 6 per monthly statement cycle, including Online and Mobile Banking transfers. See Personal Schedule of Fees for details.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

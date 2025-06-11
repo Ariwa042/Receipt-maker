@@ -1,0 +1,162 @@
+/* Root Defaults */
+:root {
+    --primary: #0d6efd;
+    --primary-light: #e7f0ff;
+    --bg-light: #f8f9fa;
+    --text-dark: #212529;
+    --text-muted: #6c757d;
+    --font-main: 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Global Reset */
+body {
+    font-family: var(--font-main);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background-color: white;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5 {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-dark);
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+ul, ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
+
+/* Section Defaults */
+section {
+    padding: 4rem 0;
+}
+
+section.bg-light {
+    background-color: var(--bg-light);
+}
+
+section.bg-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+section.bg-primary a {
+    color: white;
+    text-decoration: underline;
+}
+
+section.bg-primary .btn {
+    color: var(--primary);
+    background-color: white;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+section.bg-primary .btn:hover {
+    background-color: var(--primary-light);
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 0.3rem;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-light {
+    background-color: white;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.btn-outline-light {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+}
+
+.btn-outline-light:hover {
+    background-color: white;
+    color: var(--primary);
+}
+
+/* Hero */
+.hero img {
+    max-width: 100%;
+    border-radius: 0.5rem;
+}
+
+/* XP Packages */
+.xp-packages {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.xp-packages div {
+    font-weight: 500;
+    padding: 1rem 2rem;
+    border: 1px solid var(--primary);
+    border-radius: 0.4rem;
+    text-align: center;
+    color: var(--primary);
+}
+
+/* How it Works Steps */
+ol li::marker {
+    font-weight: bold;
+    color: var(--primary);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .xp-packages {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    section {
+        padding: 2.5rem 1rem;
+    }
+}

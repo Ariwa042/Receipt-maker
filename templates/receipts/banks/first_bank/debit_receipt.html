@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Debit Receipt - ReceiptGen</title>
+    <style>
+        @media print {
+            .receipt-actions { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="receipt-container"style="font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; border: 2px solid #003b65;">
+    <!-- First Bank Header -->
+    <div class="bank-header" style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #003b65; padding-bottom: 15px;">
+        <img src="{% static 'images/firstbank-logo.png' %}" alt="First Bank Logo" style="height: 60px;">
+        <h2 style="color: #003b65; margin: 10px 0;">First Bank of Nigeria</h2>
+        <div style="color: #666;">Debit Transaction Receipt</div>
+    </div>
+
+    <!-- Transaction Details -->
+    <div class="transaction-details" style="margin: 20px 0; padding: 15px; background-color: #f9f9f9;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Transaction Date:</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.date|date:"d M Y H:i:s" }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Transaction Reference:</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">FBN{{ receipt.id|stringformat:"010d" }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">From Account:</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.sender_account_number }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Account Name:</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.sender_name }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">To Account:</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.beneficiary_account_number }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Beneficiary Name:</td>                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.beneficiary_name }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Beneficiary Bank:</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.beneficiary_bank.type }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Amount:</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; font-weight: bold; color: #cc0000;">
+                    ₦{{ receipt.amount|floatformat:2 }}
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Narration:</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.description }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Status:</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #008000;">SUCCESSFUL</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="receipt-footer" style="margin-top: 30px; text-align: center; color: #666; font-size: 0.9em;">
+        <p>Thank you for banking with First Bank of Nigeria.</p>
+        <p style="font-size: 0.8em; margin-top: 10px;">
+            For complaints and enquiries, please contact us at:<br>
+            FirstContact: 01-4485500 | 0708-062-5000<br>
+            Email: firstcontact@firstbanknigeria.com
+        </p>
+        <div style="margin-top: 20px; font-size: 0.8em; color: #999;">
+            This is a computer-generated document. No signature is required.        </div>
+    </div>
+</body>
+</html>

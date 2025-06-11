@@ -1,0 +1,542 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - ReceiptGen{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 800;
+        margin-bottom: 2rem;
+    }
+
+    .stats-card {
+        background: var(--gradient-surface);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: var(--transition-smooth);
+    }
+
+    .stats-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+    }
+
+    .stats-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg), var(--shadow-glow);
+    }
+
+    .xp-balance {
+        font-size: 3rem;
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 1rem 0;
+    }
+
+    .stats-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+    }
+
+    .stats-icon.xp {
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        color: white;
+    }
+
+    .stats-icon.receipts {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+
+    .stats-icon.activity {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+    }
+
+    .quick-action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .action-category {
+        background: var(--bg-card);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: var(--transition-smooth);
+    }
+
+    .action-category:hover {
+        border-color: var(--border-secondary);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .category-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    .category-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.125rem;
+    }
+
+    .category-icon.bank {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+    }
+
+    .category-icon.crypto {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+    }
+
+    .action-button {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.875rem 1rem;
+        margin-bottom: 0.5rem;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-primary);
+        border-radius: 10px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: var(--transition-fast);
+        font-weight: 500;
+    }
+
+    .action-button:hover {
+        background: var(--bg-elevated);
+        border-color: var(--border-secondary);
+        color: var(--text-primary);
+        transform: translateX(4px);
+    }
+
+    .action-button:last-child {
+        margin-bottom: 0;
+    }
+
+    .activity-table {
+        background: var(--bg-card);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .table-dark {
+        --bs-table-bg: var(--bg-card);
+        --bs-table-striped-bg: var(--bg-surface);
+        --bs-table-hover-bg: var(--bg-elevated);
+        --bs-table-border-color: var(--border-primary);
+        color: var(--text-secondary);
+    }
+
+    .table-dark th {
+        background: var(--bg-surface);
+        color: var(--text-primary);
+        font-weight: 600;
+        border: none;
+        padding: 1rem;
+    }
+
+    .table-dark td {
+        border-color: var(--border-primary);
+        padding: 1rem;
+    }
+
+    .status-badge {
+        padding: 0.375rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--accent-success);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .status-pending {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--accent-warning);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .status-failed {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--accent-danger);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .welcome-section {
+        background: var(--gradient-surface);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-primary);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--gradient-primary);
+    }
+
+    .feature-highlight {
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .quick-action-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .xp-balance {
+            font-size: 2rem;
+        }
+        
+        .stats-card {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard fade-in">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="dashboard-header display-4 mb-2">
+                    Welcome back, {{ request.user.full_name|default:"User" }}! 
+                    <span style="font-size: 0.8em;">👋</span>
+                </h1>
+                <p class="lead mb-0" style="color: var(--text-secondary);">
+                    Ready to create professional receipts? Let's make it happen.
+                </p>
+            </div>
+            
+        </div>
+        
+        <div class="feature-highlight">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <i class="fas fa-lightbulb me-2 text-warning"></i>
+                    <strong>Pro Tip:</strong> Generate receipts faster by using our quick action templates below.
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <small class="text-muted">Learn more →</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stats-card">
+                <div class="stats-icon xp">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">XP Balance</h3>
+                <div class="xp-balance">{{ profile.xp_balance|default:"0" }}</div>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Experience Points</p>
+                <button class="btn btn-primary w-100">
+                    <i class="fas fa-plus-circle me-2"></i>Buy XP
+                </button>
+            </div>
+        </div>
+
+    <!-- Quick Actions Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">
+                    <i class="fas fa-zap me-2 icon-gradient"></i>Quick Actions
+                </h3>
+                <small style="color: var(--text-muted);">Choose a receipt type to get started</small>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="quick-action-grid">
+                <!-- Bank Receipts Category -->
+                <div class="action-category slide-up">
+                    <div class="category-header">
+                        <div class="category-icon bank">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1" style="color: var(--text-primary);">Bank Receipts</h5>
+                            <small style="color: var(--text-muted);">Traditional banking transactions</small>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="{% url 'receipts:create_debit_bank_receipt' %}" class="action-button">
+                            <i class="fas fa-minus-circle text-danger"></i>
+                            <div>
+                                <div>Debit Receipt</div>
+                                <small style="color: var(--text-muted);">Money withdrawn</small>
+                            </div>
+                        </a>
+                        <a href="{% url 'receipts:create_credit_bank_receipt' %}" class="action-button">
+                            <i class="fas fa-plus-circle text-success"></i>
+                            <div>
+                                <div>Credit Receipt</div>
+                                <small style="color: var(--text-muted);">Money deposited</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Crypto Receipts Category -->
+                <div class="action-category slide-up" style="animation-delay: 0.1s;">
+                    <div class="category-header">
+                        <div class="category-icon crypto">
+                            <i class="fab fa-bitcoin"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1" style="color: var(--text-primary);">Crypto Receipts</h5>
+                            <small style="color: var(--text-muted);">Cryptocurrency transactions</small>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="{% url 'receipts:create_crypto_withdrawal_receipt' %}" class="action-button">
+                            <i class="fas fa-arrow-up text-warning"></i>
+                            <div>
+                                <div>Withdrawal Receipt</div>
+                                <small style="color: var(--text-muted);">Crypto sent out</small>
+                            </div>
+                        </a>
+                        <a href="{% url 'receipts:create_crypto_deposit_receipt' %}" class="action-button">
+                            <i class="fas fa-arrow-down text-info"></i>
+                            <div>
+                                <div>Deposit Receipt</div>
+                                <small style="color: var(--text-muted);">Crypto received</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">
+                    <i class="fas fa-clock-rotate-left me-2 icon-gradient"></i>Recent Activity
+                </h3>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-secondary">
+                        <i class="fas fa-filter me-1"></i>Filter
+                    </button>
+                    <button class="btn btn-sm btn-primary">
+                        <i class="fas fa-eye me-1"></i>View All
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-calendar-alt me-2"></i>Date</th>
+                            <th><i class="fas fa-tag me-2"></i>Type</th>
+                            <th><i class="fas fa-info-circle me-2"></i>Details</th>
+                            <th><i class="fas fa-coins me-2"></i>XP Cost</th>
+                            <th><i class="fas fa-check-circle me-2"></i>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if not recent_activity %}
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">
+                                        <i class="fas fa-receipt"></i>
+                                    </div>
+                                    <h5 style="color: var(--text-secondary);">No Recent Activity</h5>
+                                    <p style="color: var(--text-muted);">
+                                        Your recent receipts and transactions will appear here.<br>
+                                        <strong>Start by creating your first receipt above!</strong>
+                                    </p>
+                                    <button class="btn btn-primary mt-2">
+                                        <i class="fas fa-plus me-2"></i>Create First Receipt
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        {% for activity in recent_activity %}
+                        <tr>
+                            <td>
+                                <div>
+                                    <strong>{{ activity.created_at|date:"M d, Y" }}</strong>
+                                    <br><small class="text-muted">{{ activity.created_at|time:"g:i A" }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    {% if activity.receipt_type == 'bank_debit' %}
+                                        <i class="fas fa-university text-primary"></i>
+                                        Bank Debit
+                                    {% elif activity.receipt_type == 'bank_credit' %}
+                                        <i class="fas fa-university text-success"></i>
+                                        Bank Credit
+                                    {% elif activity.receipt_type == 'crypto_withdrawal' %}
+                                        <i class="fab fa-bitcoin text-warning"></i>
+                                        Crypto Withdrawal
+                                    {% elif activity.receipt_type == 'crypto_deposit' %}
+                                        <i class="fab fa-bitcoin text-info"></i>
+                                        Crypto Deposit
+                                    {% else %}
+                                        <i class="fas fa-receipt text-secondary"></i>
+                                        {{ activity.receipt_type|title }}
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <strong>${{ activity.amount|floatformat:2 }}</strong>
+                                    <br><small class="text-muted">{{ activity.description|truncatechars:30 }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning">{{ activity.xp_cost|default:"5" }} XP</span>
+                            </td>
+                            <td>
+                                {% if activity.status == 'completed' %}
+                                    <span class="status-badge status-success">
+                                        <i class="fas fa-check me-1"></i>Completed
+                                    </span>
+                                {% elif activity.status == 'pending' %}
+                                    <span class="status-badge status-pending">
+                                        <i class="fas fa-clock me-1"></i>Pending
+                                    </span>
+                                {% elif activity.status == 'failed' %}
+                                    <span class="status-badge status-failed">
+                                        <i class="fas fa-times me-1"></i>Failed
+                                    </span>
+                                {% else %}
+                                    <span class="status-badge status-success">
+                                        <i class="fas fa-check me-1"></i>Completed
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{% url 'receipts:view_receipt' activity.id %}"><i class="fas fa-eye me-2"></i>View</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'receipts:download_receipt' activity.id %}"><i class="fas fa-download me-2"></i>Download</a></li>
+                                        <li><a class="dropdown-item" href="#" data-receipt-id="{{ activity.id }}"><i class="fas fa-share me-2"></i>Share</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add some interactive functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate stats on hover
+    const statsCards = document.querySelectorAll('.stats-card');
+    statsCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            const balance = this.querySelector('.xp-balance');
+            if (balance) {
+                balance.style.transform = 'scale(1.05)';
+                balance.style.transition = 'transform 0.3s ease';
+            }
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            const balance = this.querySelector('.xp-balance');
+            if (balance) {
+                balance.style.transform = 'scale(1)';
+            }
+        });
+    });
+
+    // Add click tracking for analytics
+    const actionButtons = document.querySelectorAll('.action-button');
+    actionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // You can add analytics tracking here
+            console.log('Action clicked:', this.textContent.trim());
+        });
+    });
+});
+</script>
+{% endblock %}

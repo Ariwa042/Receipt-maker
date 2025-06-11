@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bank Transfer Details - ReceiptGen{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Bank Transfer Details</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Payment Information</h5>
+                    <p><strong>Package:</strong> {{ package.name }}</p>
+                    <p><strong>Amount:</strong> ${{ payment_info.amount }}</p>
+                    
+                    <hr>
+                    
+                    <h5 class="mb-3">Bank Account Details</h5>
+                    {% for account in payment_accounts %}
+                    <div class="bank-account mb-4">
+                        <p><strong>Bank:</strong> {{ account.bank_name }}</p>
+                        <p><strong>Account Name:</strong> {{ account.account_holder_name }}</p>
+                        <p>
+                            <strong>Account Number:</strong> 
+                            <span id="account_number_{{ forloop.counter }}">{{ account.account_number }}</span>
+                            <button class="btn btn-sm btn-outline-primary ms-2" 
+                                    onclick="copyToClipboard('account_number_{{ forloop.counter }}')">
+                                Copy
+                            </button>
+                        </p>
+                    </div>
+                    {% endfor %}
+                      <form method="post" action="{% url 'payments:confirm_payment' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="payment_id" value="{{ payment_info.payment_id }}">
+                        <button type="submit" class="btn btn-primary">I've Made the Payment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Instructions</h5>
+                    <ol>
+                        <li>Transfer the exact amount shown above to any of the bank accounts listed.</li>
+                        <li>Use your email as the payment reference.</li>
+                        <li>After making the transfer, click "I've Made the Payment".</li>
+                        <li>Our team will verify your payment and credit your XP balance.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_scripts %}
+<script>
+function copyToClipboard(elementId) {
+    const text = document.getElementById(elementId).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard!');
+    });
+}
+</script>
+{% endblock %}
+{% endblock %}

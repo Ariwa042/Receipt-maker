@@ -1,0 +1,137 @@
+/* Main CSS for ReceiptGen */
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f9fa; color: #222; }
+.container { max-width: 900px; margin: 2rem auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 2rem; }
+.btn { background: #007bff; color: #fff; border: none; padding: 0.5rem 1.5rem; border-radius: 4px; cursor: pointer; }
+.btn:hover { background: #0056b3; }
+
+/* Dashboard styles */
+.dashboard h1 { margin-bottom: 2rem; }
+.card { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; margin-bottom: 1rem; }
+.card-header { padding: 1rem; border-bottom: 1px solid #eee; }
+.card-body { padding: 1.5rem; }
+.xp-balance { font-size: 2.5rem; color: #28a745; margin-bottom: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.btn-primary { background: #28a745; }
+.btn-primary:hover { background: #218838; }
+
+/* Receipt Actions */
+.receipt-actions {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.action-buttons {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.action-buttons .alert {
+    margin-bottom: 1rem;
+}
+
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+@media print {
+    .receipt-actions,
+    .action-buttons {
+        display: none !important;
+    }
+}
+
+/* Receipt Form Styling */
+.receipt-form-container {
+    max-width: 900px;
+    margin: 2rem auto;
+}
+
+.form-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-section h4 {
+    margin-bottom: 1.5rem;
+    color: #444;
+}
+
+.form-actions {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+/* Alert Messages */
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.25rem;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border: 1px solid #0056b3;
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: #6c757d;
+    border: 1px solid #545b62;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .form-section {
+        padding: 1rem;
+    }
+    
+    .receipt-form-container {
+        margin: 1rem;
+    }
+}

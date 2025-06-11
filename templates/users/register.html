@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Register - ReceiptGen{% endblock %}
+{% block content %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card">
+                    <div class="card-header text-center py-4">
+                        <h2 class="mb-0"><i class="fas fa-user-plus me-2"></i>Create Account</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-primary w-100 mt-4 mb-4">
+                                <i class="fas fa-user-check me-2"></i>Create Account
+                            </button>
+                        </form>
+                        <div class="text-center">
+                            <p style="color: var(--text-secondary);">Already have an account? 
+                                <a href="{% url 'login' %}" class="text-decoration-none" style="color: var(--accent);">Login</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

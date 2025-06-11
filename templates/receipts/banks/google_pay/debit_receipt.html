@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Google Pay Receipt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+          .phone-container {
+            width: 100%;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #1a1a1a;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-bar {
+            height: 44px;
+            width: 100%;
+        }
+        
+        .main-content {
+            padding: 40px 24px 32px;
+            text-align: center;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .recipient-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            background: #333333;
+            overflow: hidden;
+            border: 3px solid #444444;
+        }
+        
+        .recipient-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .recipient-info {
+            margin-bottom: 32px;
+        }
+        
+        .recipient-name {
+            font-size: 20px;
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        
+        .recipient-phone {
+            font-size: 16px;
+            color: #b3b3b3;
+            font-weight: 400;
+        }
+        
+        .amount {
+            font-size: 64px;
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 24px;
+            line-height: 1;
+        }
+        
+        .status-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 48px;
+        }
+        
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            background: #34a853;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .status-icon::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-text {
+            color: #b3b3b3;
+            font-size: 16px;
+            font-weight: 400;
+        }
+        
+        .details-card {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: left;
+            margin-bottom: 32px;
+            border: 1px solid #3a3a3a;
+        }
+        
+        .bank-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+        
+        .bank-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .bank-logo {
+            width: 48px;
+            height: 48px;
+            background: #0066cc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .bank-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .bank-name {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .account-number {
+            color: #b3b3b3;
+            font-size: 14px;
+            font-weight: 400;
+        }
+        
+        .dropdown-icon {
+            color: #b3b3b3;
+            font-size: 16px;
+        }
+        
+        .detail-row {
+            margin-bottom: 20px;
+        }
+        
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-label {
+            color: #b3b3b3;
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+        
+        .detail-value {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 400;
+            word-break: break-all;
+        }
+        
+        .powered-by {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .powered-text {
+            color: #666666;
+            font-size: 12px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .upi-logo {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+        }          /* Responsive base styles */
+        @media screen and (min-width: 376px) {
+            .phone-container {
+                max-width: 375px;
+                border-radius: 16px;
+                margin: 24px auto;
+                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+                min-height: calc(100vh - 48px);
+            }
+        }
+
+        /* Mobile first styles */
+        .google-pay-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: #1a1a1a;
+            padding: 24px 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .google-pay-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 24px;
+        }
+
+        @media screen and (max-width: 375px) {
+            .phone-container {
+                width: 100%;
+            }
+            
+            .main-content {
+                padding: 32px 16px 32px;
+            }
+            
+            .amount {
+                font-size: 48px;
+            }
+            
+            .details-card {
+                padding: 16px;
+            }
+
+            .google-pay-logo {
+                height: 20px;
+            }
+
+            .bank-section {
+                gap: 12px;
+            }
+
+            .bank-info {
+                gap: 12px;
+            }
+
+            .bank-logo {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+
+        @media screen and (max-width: 320px) {
+            .main-content {
+                padding: 24px 12px 24px;
+            }
+
+            .amount {
+                font-size: 40px;
+            }
+
+            .recipient-avatar {
+                width: 64px;
+                height: 64px;
+            }
+
+            .bank-logo {
+                width: 36px;
+                height: 36px;
+            }
+
+            .detail-value {
+                font-size: 14px;
+            }
+        }
+        
+        .main-content {
+            padding-bottom: 120px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="status-bar"></div>
+        
+        <div class="main-content">
+            <div class="recipient-avatar">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='40' fill='%23666'/%3E%3Ccircle cx='40' cy='30' r='12' fill='%23999'/%3E%3Cpath d='M20 60 Q20 45 40 45 Q60 45 60 60' fill='%23999'/%3E%3C/svg%3E" alt="{{ receipt.beneficiary_name }}">
+            </div>
+            
+            <div class="recipient-info">
+                <div class="recipient-name">To {{ receipt.beneficiary_name }}</div>
+                <div class="recipient-phone">{{ receipt.beneficiary_account_number }}</div>
+            </div>
+            
+            <div class="amount">₹{{ receipt.amount|floatformat:2 }}</div>
+            
+            <div class="status-section">
+                <div class="status-icon"></div>
+                <div class="status-text">{{ receipt.receipt_status|title }} • {{ receipt.transaction_date|date:"F j, Y \a\t g:i A" }}</div>
+            </div>
+            
+            <div class="details-card">
+                <div class="bank-section">
+                    <div class="bank-info">
+                        <div class="bank-logo">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="bank-details">
+                            <div class="bank-name">{{ receipt.your_bank.type }}</div>
+                            <div class="account-number">XXXXXX{{ receipt.your_account_number|slice:"-4:" }}</div>
+                        </div>
+                    </div>
+                    <div class="dropdown-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">UPI transaction ID</div>
+                    <div class="detail-value">{{ receipt.transaction_id }}</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">To: {{ receipt.beneficiary_name }} ({{ receipt.beneficiary_bank.type }})</div>
+                    <div class="detail-value">{{ receipt.beneficiary_account_number }}</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">From: {{ receipt.your_name }} ({{ receipt.your_bank.type }})</div>
+                    <div class="detail-value">{{ receipt.your_account_number }}</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Google transaction ID</div>
+                    <div class="detail-value">{{ receipt.session_id|default:"" }}</div>
+                </div>
+            </div>
+            
+            <div class="powered-by">
+                <div class="powered-text">Powered by</div>
+                <div class="upi-logo">UPI</div>
+            </div>
+        </div>
+        
+        <div class="google-pay-footer">            <div class="google-pay-logo">
+                <img src="/static/images/google-pay-logo.png" alt="Google Pay" width="80" height="24">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

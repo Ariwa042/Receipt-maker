@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Pay Receipt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .phone-container {
+            width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #1a1a1a;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-bar {
+            height: 44px;
+            width: 100%;
+        }
+        
+        .main-content {
+            padding: 40px 32px 32px;
+            text-align: center;
+        }
+        
+        .recipient-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            background: #333333;
+            overflow: hidden;
+            border: 3px solid #444444;
+        }
+        
+        .recipient-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .recipient-info {
+            margin-bottom: 32px;
+        }
+        
+        .recipient-name {
+            font-size: 20px;
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        
+        .recipient-phone {
+            font-size: 16px;
+            color: #b3b3b3;
+            font-weight: 400;
+        }
+        
+        .amount {
+            font-size: 64px;
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 24px;
+            line-height: 1;
+        }
+        
+        .status-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 48px;
+        }
+        
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            background: #34a853;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .status-icon::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-text {
+            color: #b3b3b3;
+            font-size: 16px;
+            font-weight: 400;
+        }
+        
+        .details-card {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: left;
+            margin-bottom: 32px;
+            border: 1px solid #3a3a3a;
+        }
+        
+        .bank-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+        
+        .bank-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .bank-logo {
+            width: 48px;
+            height: 48px;
+            background: #0066cc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .bank-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .bank-name {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .account-number {
+            color: #b3b3b3;
+            font-size: 14px;
+            font-weight: 400;
+        }
+        
+        .dropdown-icon {
+            color: #b3b3b3;
+            font-size: 16px;
+        }
+        
+        .detail-row {
+            margin-bottom: 20px;
+        }
+        
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-label {
+            color: #b3b3b3;
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+        
+        .detail-value {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 400;
+            word-break: break-all;
+        }
+        
+        .powered-by {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .powered-text {
+            color: #666666;
+            font-size: 12px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .upi-logo {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+        }
+          @media screen and (max-width: 375px) {
+            .phone-container {
+                width: 100%;
+            }
+            
+            .main-content {
+                padding: 32px 16px 32px;
+            }
+            
+            .amount {
+                font-size: 48px;
+            }
+            
+            .details-card {
+                padding: 16px;
+            }
+        }
+
+        .google-pay-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            max-width: 375px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            padding: 24px 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .google-pay-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 24px;
+        }
+
+        .google-pay-logo svg {
+            height: 100%;
+            width: auto;
+        }
+
+        /* Adjust logo size for smaller screens */
+        @media screen and (max-width: 375px) {
+            .google-pay-logo {
+                height: 20px;
+            }
+        }
+        
+        .main-content {
+            padding-bottom: 120px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="status-bar"></div>
+        
+        <div class="main-content">
+            <div class="recipient-avatar">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='40' fill='%23666'/%3E%3Ccircle cx='40' cy='30' r='12' fill='%23999'/%3E%3Cpath d='M20 60 Q20 45 40 45 Q60 45 60 60' fill='%23999'/%3E%3C/svg%3E" alt="Anbu Mani">
+            </div>
+            
+            <div class="recipient-info">
+                <div class="recipient-name">To Anbu Mani</div>
+                <div class="recipient-phone">+91 98422 59129</div>
+            </div>
+            
+            <div class="amount">₹5,000</div>
+            
+            <div class="status-section">
+                <div class="status-icon"></div>
+                <div class="status-text">Completed • March 6, 2022 at 1:14 PM</div>
+            </div>
+            
+            <div class="details-card">
+                <div class="bank-section">
+                    <div class="bank-info">
+                        <div class="bank-logo">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="bank-details">
+                            <div class="bank-name">State Bank of India</div>
+                            <div class="account-number">XXXXXX2483</div>
+                        </div>
+                    </div>
+                    <div class="dropdown-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">UPI transaction ID</div>
+                    <div class="detail-value">206513127684</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">To: NAGARATHINAMA</div>
+                    <div class="detail-value">licanbumani2005-1@okaxis</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">From: PUSHPARAJ R (State Bank of India)</div>
+                    <div class="detail-value">jackpushpa966@oksbi</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Google transaction ID</div>
+                    <div class="detail-value">CICAgODV-rDadQ</div>
+                </div>
+            </div>
+            
+            <div class="powered-by">
+                <div class="powered-text">Powered by</div>
+                <div class="upi-logo">UPI</div>
+            </div>
+        </div>
+        
+        <div class="google-pay-footer">            <div class="google-pay-logo">
+                <img src="/static/images/google-pay-logo.png" alt="Google Pay" width="80" height="24">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

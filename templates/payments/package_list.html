@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}XP Packages - ReceiptGen{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Purchase XP Packages</h1>
+    
+    {% if messages %}
+    <div class="messages mb-4">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="row">
+        {% for package in packages %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ package.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ package.xp_amount }} XP</h6>
+                    <p class="card-text">{{ package.description }}</p>
+                    <div class="h4 mb-4">${{ package.price }}</div>
+                    
+                    <form method="post" action="{% url 'payments:package_list' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="package_id" value="{{ package.id }}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Payment Method:</label>
+                            {% for value, label in payment_methods %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" 
+                                       name="payment_method" value="{{ value }}" 
+                                       id="{{ value }}_{{ package.id }}" required>
+                                <label class="form-check-label" for="{{ value }}_{{ package.id }}">
+                                    {{ label }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Purchase</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,247 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itaú - Comprovante IPTU</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Arial", sans-serif;
+            background-color: #ffffff;
+            padding: 20px;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .receipt-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 0;
+        }
+
+        .logo-section {
+            margin-bottom: 25px;
+        }
+
+        .itau-logo {
+            width: 70px;
+            height: 50px;
+            background: #0033A0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .service-title {
+            font-size: 24px;
+            font-weight: 300;
+            color: #666;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .amount {
+            font-size: 28px;
+            font-weight: 400;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .info-section {
+            margin-bottom: 25px;
+        }
+
+        .info-label {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .barcode-section {
+            margin-bottom: 25px;
+        }
+
+        .barcode-value {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.3;
+            word-break: break-all;
+            font-family: "Courier New", monospace;
+            margin-bottom: 20px;
+        }
+
+        .account-info {
+            display: flex;
+            gap: 80px;
+            margin-bottom: 25px;
+        }
+
+        .account-group {
+            flex: 1;
+        }
+
+        .account-label {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .account-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 400;
+        }
+
+        .payment-type-section {
+            margin-bottom: 25px;
+        }
+
+        .payment-type-label {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .payment-type-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .document-value-section {
+            margin-bottom: 25px;
+        }
+
+        .control-section {
+            margin-bottom: 25px;
+        }
+
+        .control-label {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .control-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .completion-status {
+            color: #0066cc;
+            font-size: 16px;
+            font-weight: 400;
+            margin-bottom: 5px;
+        }
+
+        .completion-method {
+            color: #333;
+            font-size: 16px;
+            font-weight: 400;
+            margin-bottom: 25px;
+        }
+
+        .auth-section {
+            margin-bottom: 10px;
+        }
+
+        .auth-label {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .auth-value {
+            font-size: 14px;
+            color: #333;
+            word-break: break-all;
+            font-family: "Courier New", monospace;
+            line-height: 1.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <div class="logo-section">
+            <div class="itau-logo">Itaú</div>
+        </div>
+
+        <div class="service-title">IPTU</div>
+
+        <div class="amount">{{ receipt.get_currency_display }}{{ receipt.formatted_amount }}</div>
+
+        <div class="info-section">
+            <div class="info-label">situação da transação</div>
+            <div class="info-value">pago em {{ receipt.transaction_date|date:"d/m/Y" }}</div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-label">cedente</div>
+            <div class="info-value">{{ receipt.beneficiary_name }}</div>
+        </div>
+
+        <div class="barcode-section">
+            <div class="info-label">código de barras</div>
+            <div class="barcode-value">{{ receipt.transaction_id }}</div>
+        </div>
+
+        <div class="account-info">
+            <div class="account-group">
+                <div class="account-label">agência</div>
+                <div class="account-value">{{ receipt.your_bank.branch_number }}</div>
+            </div>
+            <div class="account-group">
+                <div class="account-label">conta corrente</div>
+                <div class="account-value">{{ receipt.your_account_number }}</div>
+            </div>
+        </div>
+
+        <div class="payment-type-section">
+            <div class="payment-type-label">tipo do pagamento</div>
+            <div class="payment-type-value">{{ receipt.payment_type|default:"Débito em conta corrente" }}</div>
+        </div>
+
+        <div class="document-value-section">
+            <div class="info-label">valor do documento</div>
+            <div class="info-value">{{ receipt.get_currency_display }}{{ receipt.formatted_amount }}</div>
+        </div>
+
+        <div class="control-section">
+            <div class="control-label">controle</div>
+            <div class="control-value">{{ receipt.transaction_id }}</div>
+        </div>
+
+        <div class="completion-status">pagamento efetuado em {{ receipt.transaction_date|date:"d/m/Y" }} às {{ receipt.transaction_date|date:"H:i:s" }}</div>
+        <div class="completion-method">via {{ receipt.payment_method|default:"Aplicativo" }}</div>
+
+        <div class="auth-section">
+            <div class="auth-label">autenticação</div>
+            <div class="auth-value">{{ receipt.session_id }}</div>
+        </div>
+    </div>
+</body>
+</html>

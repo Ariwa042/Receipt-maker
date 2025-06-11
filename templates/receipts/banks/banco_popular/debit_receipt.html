@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprobante Banco Popular</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .receipt {
+            width: 100%;
+            max-width: 375px;
+            margin: 0 auto;
+            background: #f7f7f7;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .logo-section {
+            margin-bottom: 80px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo-icon {
+            width: 60px;
+            height: 42px;
+            background: #1e3a8a;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .sunburst {
+            width: 28px;
+            height: 28px;
+            position: relative;
+            background: conic-gradient(from 0deg, #60a5fa 0deg, #3b82f6 90deg, #1d4ed8 180deg, #1e40af 270deg, #60a5fa 360deg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sunburst::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 40%, #60a5fa 41%, #60a5fa 42%, transparent 43%);
+            border-radius: 50%;
+        }
+        
+        .sunburst::after {
+            content: '';
+            width: 16px;
+            height: 16px;
+            background: #1e3a8a;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        
+        .logo-text {
+            font-size: 32px;
+            font-weight: 900;
+            color: #1e3a8a;
+            letter-spacing: 0.5px;
+        }
+        
+        .success-area {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+        
+        .checkmark-circle {
+            width: 82px;
+            height: 82px;
+            border: 3px solid #0891b2;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+        }
+        
+        .checkmark {
+            width: 28px;
+            height: 16px;
+            border-left: 3px solid #0891b2;
+            border-bottom: 3px solid #0891b2;
+            transform: rotate(-45deg);
+            margin-top: -6px;
+            margin-left: 4px;
+        }
+        
+        .comprobante-text {
+            font-size: 18px;
+            color: #6b7280;
+            font-weight: 400;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+        
+        .amount-large {
+            font-size: 48px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 35px;
+            letter-spacing: -1px;
+        }
+        
+        .success-message {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .details-section {
+            margin-top: 50px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 16px 0;
+            border-bottom: 1px solid #d1d5db;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-left {
+            color: #6b7280;
+            font-size: 16px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+        
+        .detail-right {
+            text-align: right;
+            margin-left: 20px;
+            flex-grow: 1;
+        }
+        
+        .detail-main {
+            color: #374151;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        
+        .detail-sub {
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 400;
+        }
+        
+        .single-value {
+            color: #374151;
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt">
+        <div class="logo-section">
+            <div class="logo">
+                <div class="logo-icon">
+                    <div class="sunburst"></div>
+                </div>
+                <div class="logo-text">POPULAR</div>
+            </div>
+        </div>
+        
+        <div class="success-area">
+            <div class="checkmark-circle">
+                <div class="checkmark"></div>
+            </div>
+            <div class="comprobante-text">COMPROBANTE</div>
+            <div class="amount-large">RD$-9,000.00</div>
+            <div class="success-message">Tu transferencia ha sido realizada</div>
+        </div>
+        
+        <div class="details-section">
+            <div class="detail-row">
+                <div class="detail-left">Desde cuenta:</div>
+                <div class="detail-right">
+                    <div class="detail-main">Cuenta de ahorros</div>
+                    <div class="detail-sub">*****2879</div>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-left">Beneficiario:</div>
+                <div class="detail-right">
+                    <div class="detail-main">Sr Dario A Montalvo Martinez</div>
+                    <div class="detail-sub">0837097179</div>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-left">Fecha:</div>
+                <div class="detail-right">
+                    <div class="single-value">05 feb 2025 - 07:54 p.m.</div>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-left">Impuesto DGII 0.15%:</div>
+                <div class="detail-right">
+                    <div class="single-value">RD$13.50</div>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-left">No. de referencia:</div>
+                <div class="detail-right">
+                    <div class="single-value">502050754</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
