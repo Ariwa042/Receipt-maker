@@ -9,3 +9,4 @@ crispy-bootstrap4==2023.1
 
 # Development dependencies
 django-debug-toolbar==4.2.0
+gunicorn
