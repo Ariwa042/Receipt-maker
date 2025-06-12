@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-^)_f0m!i+50ri-=s1yflvh(w6#9dzn%twb&gx$g8z=9h%s@$m1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['fake-receipt.onrender.com', '*']
 
 
 # Application definition
@@ -140,3 +140,7 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 
 AUTH_USER_MODEL = 'users.User'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://fake-receipt.onrender.com',
+]
