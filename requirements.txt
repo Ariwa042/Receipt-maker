@@ -12,3 +12,4 @@ dj-database-url==2.1.0
 
 # Development dependencies
 django-debug-toolbar==4.2.0
+django-jazzmin
