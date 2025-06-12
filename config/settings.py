@@ -31,12 +31,13 @@ ALLOWED_HOSTS = ['fake-receipt.onrender.com', '*']
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',    
+    'django.contrib.staticfiles',
     'receipts',
     'users',
     'payments',
@@ -80,8 +81,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres.yrdohnhncgaxojfnmcfr',
+        'PASSWORD': 'Arinze123..',
+        'HOST': 'aws-0-eu-central-1.pooler.supabase.com',
+        'PORT': '6543',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
 
@@ -135,7 +143,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
@@ -145,3 +154,19 @@ AUTH_USER_MODEL = 'users.User'
 CSRF_TRUSTED_ORIGINS = [
     'https://fake-receipt.onrender.com',
 ]
+
+# Jazzmin Settings
+JAZZMIN_SETTINGS = {
+    # title of the window
+    "site_title": "Receipt Admin",
+    # Title on the brand, and the login screen (19 chars max)
+    "site_header": "Receipt Admin",
+    # Welcome text on the login screen
+    "welcome_sign": "Welcome to Receipt Admin Panel",
+    # Copyright on the footer
+    "copyright": "Receipt Generator",
+    # The model admin to search from the search bar
+    "search_model": "users.User",
+    # Field name on user model that contains avatar image
+    "user_avatar": None,
+}

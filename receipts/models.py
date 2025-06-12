@@ -80,9 +80,9 @@ class DebitBankReceipt(models.Model):
     
     your_bank = models.ForeignKey(BankReceiptTemplate, on_delete=models.CASCADE)
     your_name = models.CharField(max_length=255, null=True, blank=True, help_text="Please type in the correct name in full")
-    your_account_number = models.CharField(max_length=20, null=True, blank=True, help_text="Please type in the correct account number in full")
+    your_account_number = models.CharField(max_length=10, null=True, blank=True, help_text="Please type in the correct account number in full")
     beneficiary_name = models.CharField(max_length=255, null=True, blank=True, help_text="Please type in the correct name in full")
-    beneficiary_account_number = models.CharField(max_length=20, null=True, blank=True, help_text="Please type in the correct account number in full")
+    beneficiary_account_number = models.CharField(max_length=10, null=True, blank=True, help_text="Please type in the correct account number in full")
     beneficiary_bank = models.CharField(max_length=50, null=True, blank=True, help_text="Please type in the correct bank name in full")
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     receipt_status = models.CharField(max_length=20, choices=RECEIPT_STATUS_CHOICES, default='pending')
@@ -127,13 +127,13 @@ class CreditBankReceipt(models.Model):
     country = models.ForeignKey(Country, on_delete=models.CASCADE, help_text="Country where the transaction is taking place")
     
     your_name = models.CharField(max_length=255, null=True, blank=True, help_text="Please type in your name in full")
-    your_account_number = models.CharField(max_length=20, null=True, blank=True, help_text="Please type in your account number in full")
+    your_account_number = models.CharField(max_length=10, null=True, blank=True, help_text="Please type in your account number in full")
     your_bank = models.ForeignKey(BankReceiptTemplate, on_delete=models.CASCADE, help_text='this will be the bank template that will be used')
 
     sender_bank = models.CharField(max_length=50, null=True, blank=True, help_text='Ensure the bank name is written correctly')
 
     sender_name = models.CharField(max_length=255, null=True, blank=True, help_text="Please type in the correct name in full")
-    sender_account_number = models.CharField(max_length=20, null=True, blank=True, help_text="Please type in the correct account number in full")
+    sender_account_number = models.CharField(max_length=10, null=True, blank=True, help_text="Please type in the correct account number in full")
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     receipt_status = models.CharField(max_length=20, choices=RECEIPT_STATUS_CHOICES, default='pending')
     transaction_date = models.DateTimeField()
@@ -152,9 +152,9 @@ class CreditBankReceipt(models.Model):
     
     def generate_transaction_id(self):
         """Generate a unique transaction ID."""
-        prefix = "CB"  # CB for Credit Bank
+        prefix = ""  # CB for Credit Bank
         timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
-        unique_id = str(uuid.uuid4())[:8]
+        unique_id = str(uuid.uuid4())[:26]
         return f"{prefix}{timestamp}{unique_id}"
 
     def generate_session_id(self):

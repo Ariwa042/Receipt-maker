@@ -244,6 +244,54 @@
         margin-top: 1rem;
     }
 
+    .dashboard-footer {
+        margin-top: 3rem;
+        padding: 2rem 0;
+        border-top: 1px solid var(--border-primary);
+        background: var(--bg-surface);
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--text-secondary);
+    }
+
+    .footer-links {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .footer-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+        color: var(--text-primary);
+    }
+
+    .logout-link {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .logout-link:hover {
+        color: var(--text-primary);
+        transform: translateX(2px);
+    }
+
+    .logout-link i {
+        font-size: 0.8rem;
+    }
+
     @media (max-width: 768px) {
         .quick-action-grid {
             grid-template-columns: 1fr;
@@ -256,6 +304,16 @@
         .stats-card {
             padding: 1.5rem;
         }
+
+        .footer-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+        
+        .footer-links {
+            justify-content: center;
+        }
     }
 </style>
 {% endblock %}
@@ -267,7 +325,7 @@
         <div class="row align-items-center">
             <div class="col-md-8">
                 <h1 class="dashboard-header display-4 mb-2">
-                    Welcome back, {{ request.user.full_name|default:"User" }}! 
+                    Welcome back! 
                     <span style="font-size: 0.8em;">👋</span>
                 </h1>
                 <p class="lead mb-0" style="color: var(--text-secondary);">
@@ -379,132 +437,28 @@
     </div>
 
     <!-- Recent Activity Section -->
-    <div class="card">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">
-                    <i class="fas fa-clock-rotate-left me-2 icon-gradient"></i>Recent Activity
-                </h3>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-secondary">
-                        <i class="fas fa-filter me-1"></i>Filter
-                    </button>
-                    <button class="btn btn-sm btn-primary">
-                        <i class="fas fa-eye me-1"></i>View All
-                    </button>
-                </div>
+</div>
+
+<!-- Add Footer -->
+<footer class="dashboard-footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="col-md-4">
+                <a href="{% url 'logout' %}" class="logout-link">
+                    <i class="fas fa-sign-out-alt"></i>Sign out
+                </a>
             </div>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-dark table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th><i class="fas fa-calendar-alt me-2"></i>Date</th>
-                            <th><i class="fas fa-tag me-2"></i>Type</th>
-                            <th><i class="fas fa-info-circle me-2"></i>Details</th>
-                            <th><i class="fas fa-coins me-2"></i>XP Cost</th>
-                            <th><i class="fas fa-check-circle me-2"></i>Status</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if not recent_activity %}
-                        <tr>
-                            <td colspan="6">
-                                <div class="empty-state">
-                                    <div class="empty-state-icon">
-                                        <i class="fas fa-receipt"></i>
-                                    </div>
-                                    <h5 style="color: var(--text-secondary);">No Recent Activity</h5>
-                                    <p style="color: var(--text-muted);">
-                                        Your recent receipts and transactions will appear here.<br>
-                                        <strong>Start by creating your first receipt above!</strong>
-                                    </p>
-                                    <button class="btn btn-primary mt-2">
-                                        <i class="fas fa-plus me-2"></i>Create First Receipt
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        {% else %}
-                        {% for activity in recent_activity %}
-                        <tr>
-                            <td>
-                                <div>
-                                    <strong>{{ activity.created_at|date:"M d, Y" }}</strong>
-                                    <br><small class="text-muted">{{ activity.created_at|time:"g:i A" }}</small>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center gap-2">
-                                    {% if activity.receipt_type == 'bank_debit' %}
-                                        <i class="fas fa-university text-primary"></i>
-                                        Bank Debit
-                                    {% elif activity.receipt_type == 'bank_credit' %}
-                                        <i class="fas fa-university text-success"></i>
-                                        Bank Credit
-                                    {% elif activity.receipt_type == 'crypto_withdrawal' %}
-                                        <i class="fab fa-bitcoin text-warning"></i>
-                                        Crypto Withdrawal
-                                    {% elif activity.receipt_type == 'crypto_deposit' %}
-                                        <i class="fab fa-bitcoin text-info"></i>
-                                        Crypto Deposit
-                                    {% else %}
-                                        <i class="fas fa-receipt text-secondary"></i>
-                                        {{ activity.receipt_type|title }}
-                                    {% endif %}
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <strong>${{ activity.amount|floatformat:2 }}</strong>
-                                    <br><small class="text-muted">{{ activity.description|truncatechars:30 }}</small>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge bg-warning">{{ activity.xp_cost|default:"5" }} XP</span>
-                            </td>
-                            <td>
-                                {% if activity.status == 'completed' %}
-                                    <span class="status-badge status-success">
-                                        <i class="fas fa-check me-1"></i>Completed
-                                    </span>
-                                {% elif activity.status == 'pending' %}
-                                    <span class="status-badge status-pending">
-                                        <i class="fas fa-clock me-1"></i>Pending
-                                    </span>
-                                {% elif activity.status == 'failed' %}
-                                    <span class="status-badge status-failed">
-                                        <i class="fas fa-times me-1"></i>Failed
-                                    </span>
-                                {% else %}
-                                    <span class="status-badge status-success">
-                                        <i class="fas fa-check me-1"></i>Completed
-                                    </span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'receipts:view_receipt' activity.id %}"><i class="fas fa-eye me-2"></i>View</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'receipts:download_receipt' activity.id %}"><i class="fas fa-download me-2"></i>Download</a></li>
-                                        <li><a class="dropdown-item" href="#" data-receipt-id="{{ activity.id }}"><i class="fas fa-share me-2"></i>Share</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        {% endif %}
-                    </tbody>
-                </table>
+            <div class="footer-copyright">
+                © 2025 ReceiptGen. All rights reserved.
+            </div>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt me-1"></i>Privacy Policy</a>
+                <a href="#"><i class="fas fa-file-contract me-1"></i>Terms of Service</a>
+                <a href="#"><i class="fas fa-question-circle me-1"></i>Help Center</a>
             </div>
         </div>
     </div>
-</div>
+</footer>
 
 <script>
 // Add some interactive functionality

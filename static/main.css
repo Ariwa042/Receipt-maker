@@ -1,6 +1,6 @@
 /* Main CSS for ReceiptGen */
 body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f9fa; color: #222; }
-.container { max-width: 900px; margin: 2rem auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 2rem; }
+.container { max-width: 900px; margin: 2rem auto; background: #1b1b2a; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 2rem; }
 .btn { background: #007bff; color: #fff; border: none; padding: 0.5rem 1.5rem; border-radius: 4px; cursor: pointer; }
 .btn:hover { background: #0056b3; }
 

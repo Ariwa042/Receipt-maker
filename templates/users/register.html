@@ -1,26 +1,79 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block title %}Register - ReceiptGen{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-group p {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+      .form-group input {
+        width: 100%;
+        background: var(--bg-surface) !important;
+        border: 1px solid var(--border-primary) !important;
+        color: var(--text-primary) !important;
+        border-radius: 12px !important;
+        padding: 1rem 1.25rem !important;
+        transition: var(--transition-smooth);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--accent-primary) !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        background: var(--bg-elevated) !important;
+    }
+
+    .helptext {
+        display: block;
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+
+    .errorlist {
+        color: var(--accent-danger);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        list-style: none;
+        padding: 0;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
-                <div class="card">
+                <div class="glass-card">
                     <div class="card-header text-center py-4">
-                        <h2 class="mb-0"><i class="fas fa-user-plus me-2"></i>Create Account</h2>
-                    </div>
-                    <div class="card-body p-4">
+                        <h2 class="mb-0">
+                            <i class="fas fa-user-plus me-2 icon-gradient"></i>
+                            <span class="text-gradient">Create Account</span>
+                        </h2>
+                    </div>                    <div class="card-body p-4">
                         <form method="post" class="needs-validation" novalidate>
                             {% csrf_token %}
-                            {{ form|crispy }}
+                            <div class="form-group mb-4">
+                                {{ form.as_p }}
+                            </div>
                             <button type="submit" class="btn btn-primary w-100 mt-4 mb-4">
                                 <i class="fas fa-user-check me-2"></i>Create Account
                             </button>
                         </form>
                         <div class="text-center">
-                            <p style="color: var(--text-secondary);">Already have an account? 
-                                <a href="{% url 'login' %}" class="text-decoration-none" style="color: var(--accent);">Login</a>
+                            <p class="mb-0" style="color: var(--text-secondary);">Already have an account? 
+                                <a href="{% url 'login' %}" class="text-decoration-none" style="color: var(--accent-primary);">Login</a>
                             </p>
                         </div>
                     </div>
