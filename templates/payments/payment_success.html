@@ -1,39 +1,170 @@
 {% extends 'base.html' %}
 
+{% block extra_css %}
+<style>
+    .container.py-4 {
+        background: #1f1f2e;
+        min-height: calc(100vh - 100px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .success-card {
+        background: var(--gradient-surface);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        transition: var(--transition-smooth);
+        overflow: hidden;
+        position: relative;
+        padding: 2rem;
+    }
+
+    .success-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+    }
+
+    .success-icon {
+        font-size: 4rem;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+    }
+
+    .warning-icon {
+        font-size: 4rem;
+        color: var(--accent-warning);
+        margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-group {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-primary);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    .info-value {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .coin-amount {
+        font-size: 1.25rem;
+        color: var(--accent-primary);
+    }
+
+    .dashboard-btn {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: var(--transition-smooth);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .dashboard-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        opacity: 0.9;
+        color: white;
+    }
+
+    .dashboard-btn i {
+        margin-right: 0.5rem;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container py-4 text-center">
-    <div class="card mx-auto" style="max-width: 600px;">
-        <div class="card-body">
-            {% if payment.status == 'completed' %}
-                <div class="mb-4">
-                    <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
-                </div>
-                <h2 class="card-title mb-4">Payment Successful!</h2>
-                <p class="card-text">
-                    Thank you for your payment. Your XP package has been credited to your account.
+<div class="container py-4">
+    <div class="success-card mx-auto" style="max-width: 600px;">
+        {% if payment.status == 'completed' %}
+            <div class="text-center">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="card-title">Payment Successful!</h2>
+                <p class="text-muted">
+                    Thank you for your payment. Your coins have been credited to your account.
                 </p>
-                <div class="my-4">
-                    <p><strong>Payment ID:</strong> {{ payment.payment_id }}</p>
-                    <p><strong>Amount Paid:</strong> ${{ payment.amount }}</p>
-                    <p><strong>XP Credited:</strong> {{ payment.xp_package.xp_amount }} XP</p>
+
+                <div class="info-group">
+                    <div class="info-item">
+                        <span class="info-label">Payment ID</span>
+                        <span class="info-value">{{ payment.payment_id }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Amount Paid</span>
+                        <span class="info-value">${{ payment.amount }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Coins Credited</span>
+                        <span class="info-value coin-amount">{{ payment.xp_package.xp_amount }} 🪙</span>
+                    </div>
                 </div>
-            {% else %}
-                <div class="mb-4">
-                    <i class="fas fa-clock text-warning" style="font-size: 4rem;"></i>
-                </div>
-                <h2 class="card-title mb-4">Payment Pending</h2>
-                <p class="card-text">
+            </div>
+        {% else %}
+            <div class="text-center">
+                <i class="fas fa-clock warning-icon"></i>
+                <h2 class="card-title">Payment Pending</h2>
+                <p class="text-muted">
                     Your payment is being processed. Please wait while we verify the transaction.
                 </p>
-                <div class="my-4">
-                    <p><strong>Payment ID:</strong> {{ payment.payment_id }}</p>
-                    <p><strong>Amount:</strong> ${{ payment.amount }}</p>
+
+                <div class="info-group">
+                    <div class="info-item">
+                        <span class="info-label">Payment ID</span>
+                        <span class="info-value">{{ payment.payment_id }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Amount</span>
+                        <span class="info-value">${{ payment.amount }}</span>
+                    </div>
                 </div>
-            {% endif %}
-            
-            <div class="mt-4">
-                <a href="{% url 'users:dashboard' %}" class="btn btn-primary">Go to Dashboard</a>
             </div>
+        {% endif %}
+        
+        <div class="text-center">
+            <a href="{% url 'dashboard' %}" class="dashboard-btn">
+                <i class="fas fa-home"></i>Go to Dashboard
+            </a>
         </div>
     </div>
 </div>

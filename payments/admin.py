@@ -13,7 +13,7 @@ class CryptocurrencyAdmin(admin.ModelAdmin):
 
 @admin.register(XPPackage)
 class XPPackageAdmin(admin.ModelAdmin):
-    list_display = ('xp_amount', 'price')
+    list_display = ('xp_amount', 'price_in_naira', 'price_in_usdt')
     search_fields = ('xp_amount',)
 
 @admin.register(Payment)

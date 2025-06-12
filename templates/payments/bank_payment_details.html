@@ -3,53 +3,192 @@
 
 {% block title %}Bank Transfer Details - ReceiptGen{% endblock %}
 
+{% block extra_css %}
+<style>
+    .payment-header {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 800;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    .container.py-5 {
+        background: #1f1f2e;
+    }
+
+    .payment-card {
+        background: var(--gradient-surface);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        transition: var(--transition-smooth);
+        overflow: hidden;
+    }
+
+    .payment-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+    }
+
+    .payment-info {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+    }
+
+    .amount-display {
+        font-size: 2rem;
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 1rem 0;
+    }
+
+    .bank-account {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-primary);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: var(--transition-smooth);
+    }
+
+    .bank-account:hover {
+        border-color: var(--border-secondary);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .copy-btn {
+        padding: 0.4rem 1rem;
+        border-radius: 8px;
+        font-weight: 500;
+        border: 1px solid var(--accent-primary);
+        color: var(--accent-primary);
+        background: transparent;
+        transition: var(--transition-smooth);
+    }
+
+    .copy-btn:hover {
+        background: var(--accent-primary);
+        color: white;
+    }
+
+    .confirm-btn {
+        width: 100%;
+        padding: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: 12px;
+        transition: var(--transition-smooth);
+    }
+
+    .confirm-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        opacity: 0.9;
+    }
+
+    .instructions-list {
+        counter-reset: inst;
+        list-style: none;
+        padding: 0;
+    }
+
+    .instructions-list li {
+        position: relative;
+        padding: 1rem 1rem 1rem 3rem;
+        margin-bottom: 1rem;
+        background: var(--bg-surface);
+        border-radius: 8px;
+        counter-increment: inst;
+    }
+
+    .instructions-list li::before {
+        content: counter(inst);
+        position: absolute;
+        left: 1rem;
+        width: 24px;
+        height: 24px;
+        background: var(--accent-primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container py-5">
-    <h1 class="mb-4">Bank Transfer Details</h1>
-    
-    <div class="row">
+    <h1 class="payment-header">Complete Your Payment</h1>
+      <div class="row">
         <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Payment Information</h5>
-                    <p><strong>Package:</strong> {{ package.name }}</p>
-                    <p><strong>Amount:</strong> ${{ payment_info.amount }}</p>
+            <div class="payment-card mb-4 position-relative">
+                <div class="card-body p-4">
+                    <h5 class="card-title fw-bold mb-4">Payment Information</h5>
+                    <div class="payment-info">
+                        <p class="mb-2"><i class="fas fa-box me-2"></i> <strong>Package:</strong> {{ package.name }}</p>
+                        <div class="amount-display">${{ payment_info.amount }}</div>
+                    </div>
                     
-                    <hr>
+                    <hr class="my-4">
                     
-                    <h5 class="mb-3">Bank Account Details</h5>
+                    <h5 class="fw-bold mb-4">Bank Account Details</h5>
                     {% for account in payment_accounts %}
-                    <div class="bank-account mb-4">
-                        <p><strong>Bank:</strong> {{ account.bank_name }}</p>
-                        <p><strong>Account Name:</strong> {{ account.account_holder_name }}</p>
-                        <p>
-                            <strong>Account Number:</strong> 
-                            <span id="account_number_{{ forloop.counter }}">{{ account.account_number }}</span>
-                            <button class="btn btn-sm btn-outline-primary ms-2" 
+                    <div class="bank-account">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-university me-2"></i>
+                            <h6 class="mb-0 fw-bold">{{ account.bank_name }}</h6>
+                        </div>
+                        <p class="mb-2"><strong>Account Name:</strong> {{ account.account_holder_name }}</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <strong>Account Number:</strong> 
+                                <span id="account_number_{{ forloop.counter }}" class="ms-2">{{ account.account_number }}</span>
+                            </div>
+                            <button class="copy-btn" 
                                     onclick="copyToClipboard('account_number_{{ forloop.counter }}')">
-                                Copy
+                                <i class="fas fa-copy me-2"></i>Copy
                             </button>
-                        </p>
+                        </div>
                     </div>
                     {% endfor %}
-                      <form method="post" action="{% url 'payments:confirm_payment' %}">
+                    
+                    <form method="post" action="{% url 'payments:confirm_payment' %}" class="mt-4">
                         {% csrf_token %}
                         <input type="hidden" name="payment_id" value="{{ payment_info.payment_id }}">
-                        <button type="submit" class="btn btn-primary">I've Made the Payment</button>
+                        <button type="submit" class="confirm-btn">
+                            <i class="fas fa-check-circle me-2"></i>I've Made the Payment
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
         
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Instructions</h5>
-                    <ol>
-                        <li>Transfer the exact amount shown above to any of the bank accounts listed.</li>
-                        <li>Use your email as the payment reference.</li>
-                        <li>After making the transfer, click "I've Made the Payment".</li>
-                        <li>Our team will verify your payment and credit your XP balance.</li>
+            <div class="payment-card position-relative">
+                <div class="card-body p-4">
+                    <h5 class="card-title fw-bold mb-4">
+                        <i class="fas fa-info-circle me-2"></i>Payment Instructions
+                    </h5>
+                    <ol class="instructions-list">
+                        <li>Transfer the exact amount shown (${{ payment_info.amount }}) to any of the bank accounts listed.</li>
+                        <li>Use your email as the payment reference for easy tracking.</li>
+                        <li>After completing the transfer, click the confirmation button.</li>
+                        <li>Our team will verify your payment and credit your 🪙 balance within 24 hours.</li>
                     </ol>
                 </div>
             </div>
@@ -61,8 +200,21 @@
 <script>
 function copyToClipboard(elementId) {
     const text = document.getElementById(elementId).textContent;
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+    
     navigator.clipboard.writeText(text).then(() => {
-        alert('Copied to clipboard!');
+        button.innerHTML = '<i class="fas fa-check me-2"></i>Copied!';
+        button.style.background = 'var(--accent-success)';
+        button.style.borderColor = 'var(--accent-success)';
+        button.style.color = 'white';
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.style.background = '';
+            button.style.borderColor = '';
+            button.style.color = '';
+        }, 2000);
     });
 }
 </script>

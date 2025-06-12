@@ -35,10 +35,9 @@ def package_list(request):
         )
         
         # Store payment info in session
-        request.session['payment_info'] = {
-            'payment_id': payment.payment_id,
+        request.session['payment_info'] = {            'payment_id': payment.payment_id,
             'package_id': package.id,
-            'amount': str(package.price),
+            'amount': str(package.price_in_naira),  # Use price_in_naira as default
             'payment_method': payment_method,
         }
         

@@ -32,13 +32,14 @@ class Cryptocurrency(models.Model):
 
 class XPPackage(models.Model):
     xp_amount = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-
+    price_in_naira = models.DecimalField(max_digits=10, decimal_places=2)
+    price_in_usdt = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    
     def __str__(self):
-        return f"{self.xp_amount}XP for ${self.price}"
+        return f"{self.xp_amount}XP for {self.price_in_naira} Naira or {self.price_in_usdt} USDT"
 
     class Meta:
-        ordering = ['price']
+        ordering = ['price_in_naira']
 
 class Payment(models.Model):
     PAYMENT_STATUS_CHOICES = [
@@ -69,10 +70,12 @@ class Payment(models.Model):
         # Generate a short UUID if not set
         if not self.payment_id:
             self.payment_id = shortuuid.uuid()
-            
-        # Set the amount from the XP package if not already set
+              # Set the amount from the XP package if not already set
         if not self.amount and self.xp_package:
-            self.amount = self.xp_package.price
+            if self.payment_method == 'crypto' and self.xp_package.price_in_usdt:
+                self.amount = self.xp_package.price_in_usdt
+            else:
+                self.amount = self.xp_package.price_in_naira
         super().save(*args, **kwargs)
 
         # Credit XP to user's account when payment is completed

@@ -3,9 +3,93 @@
 
 {% block title %}XP Packages - ReceiptGen{% endblock %}
 
+{% block extra_css %}
+<style>
+    .package-header {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 800;
+        margin-bottom: 2rem;
+    }
+    .container.py-5 {
+        background: #1f1f2e;
+    }
+    .package-card {
+        background: var(--gradient-surface);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        transition: var(--transition-smooth);
+        overflow: hidden;
+    }
+
+    .package-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg), var(--shadow-glow);
+    }
+
+    .package-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+    }
+
+    .xp-amount {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 1rem 0;
+    }
+
+    .price-tag {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .payment-method-section {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-primary);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--accent-primary);
+        border-color: var(--accent-primary);
+    }
+
+    .purchase-btn {
+        width: 100%;
+        padding: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: var(--gradient-primary);
+        border: none;
+        transition: var(--transition-smooth);
+    }
+
+    .purchase-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        opacity: 0.9;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container py-5">
-    <h1 class="mb-4">Purchase XP Packages</h1>
+    <h1 class="package-header text-center">Choose Your 🪙 Package</h1>
     
     {% if messages %}
     <div class="messages mb-4">
@@ -16,36 +100,38 @@
         {% endfor %}
     </div>
     {% endif %}
-    
-    <div class="row">
+      <div class="row justify-content-center">
         {% for package in packages %}
         <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{ package.name }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{{ package.xp_amount }} XP</h6>
-                    <p class="card-text">{{ package.description }}</p>
-                    <div class="h4 mb-4">${{ package.price }}</div>
+            <div class="package-card h-100 position-relative">
+                <div class="card-body text-center p-4">
+                    <h3 class="mb-2">{{ package.name }}</h3>
+                    <div class="xp-amount">{{ package.xp_amount }} Coin</div>
+                    <p class="text-muted mb-4">{{ package.description }}</p>
+                    <div class="price-tag mb-4">₦{{ package.price_in_naira }}{% if package.price_in_usdt %} / ${{ package.price_in_usdt }}{% endif %}</div>
                     
                     <form method="post" action="{% url 'payments:package_list' %}">
                         {% csrf_token %}
                         <input type="hidden" name="package_id" value="{{ package.id }}">
                         
-                        <div class="mb-3">
-                            <label class="form-label">Payment Method:</label>
+                        <div class="payment-method-section">
+                            <label class="form-label fw-bold mb-3">Select Payment Method</label>
                             {% for value, label in payment_methods %}
-                            <div class="form-check">
+                            <div class="form-check mb-2">
                                 <input class="form-check-input" type="radio" 
                                        name="payment_method" value="{{ value }}" 
                                        id="{{ value }}_{{ package.id }}" required>
                                 <label class="form-check-label" for="{{ value }}_{{ package.id }}">
+                                    <i class="fas {% if value == 'bank' %}fa-university{% else %}fa-coins{% endif %} me-2"></i>
                                     {{ label }}
                                 </label>
                             </div>
                             {% endfor %}
                         </div>
                         
-                        <button type="submit" class="btn btn-primary">Purchase</button>
+                        <button type="submit" class="btn btn-primary purchase-btn">
+                            <i class="fas fa-shopping-cart me-2"></i>Purchase Now
+                        </button>
                     </form>
                 </div>
             </div>
