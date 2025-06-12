@@ -1,12 +1,12 @@
 Django==4.2
 django-crispy-forms==2.1
+crispy-bootstrap4==2023.1
 shortuuid==1.0.11
 playwright==1.40.0
 Pillow==10.1.0
 python-dotenv==1.0.0
 whitenoise==6.6.0
-crispy-bootstrap4==2023.1
+gunicorn==21.2.0
 
 # Development dependencies
 django-debug-toolbar==4.2.0
-gunicorn
