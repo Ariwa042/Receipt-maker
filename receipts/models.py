@@ -13,6 +13,7 @@ BANK_TEMPLATES= [
     ('access_bank', 'Access Bank'),
     ('opay', 'OPay'),
     ('moniepoint', 'Moniepoint'),
+    ('fidelity_bank', 'Fidelity Bank'),
     ('google_pay', 'Google Pay'),
     ('banco_popular', 'Banco Popular'),
     ('iptu', 'IPTU'),
