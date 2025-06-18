@@ -246,7 +246,8 @@
             </div>
         </div>
         
-        <div class="receipt-card">            <div class="credit-label">{{ receipt.transaction_type|default:"DEBIT"|upper }}</div>
+        <div class="receipt-card">            
+            <div class="credit-label">{{ receipt.transaction_type|default:"DEBIT"|upper }}</div>
             
             <div class="amount-section">
                 <div class="amount">{{ receipt.currency_symbol|default:"₦" }}{{ receipt.amount|floatformat:2|default:"0.00" }}</div>
@@ -289,7 +290,8 @@
                     <div class="detail-value">{{ receipt.transaction_id|default:"" }}</div>
                 </div>
 
-                <div class="detail-item">                    <div class="detail-label">Business Name</div>
+                <div class="detail-item">                    
+                    <div class="detail-label">Business Name</div>
                     <div class="detail-value">{{ receipt.your_name|upper|default:"" }}</div>
                 </div>
             </div>

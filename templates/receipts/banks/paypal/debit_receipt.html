@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Payment Confirmation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "HelveticaNeue", Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #2c2e2f;
+            line-height: 1.3;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            max-width: 375px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            border-left: 1px solid #e7e8e9;
+            border-right: 1px solid #e7e8e9;
+        }
+        
+        .header-section {
+            background-color: #ffffff;
+            padding: 24px 24px 16px;
+            text-align: center;
+            border-bottom: 1px solid #e7e8e9;
+        }
+        
+        .paypal-logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 8px;
+        }
+        
+        .success-section {
+            text-align: center;
+            padding: 40px 24px 35px;
+            background-color: #e1e7eb;
+        }
+        
+        .checkmark-container {
+            margin-bottom: 35px;
+        }
+        
+        .checkmark-circle {
+            width: 72px;
+            height: 72px;
+            border: 2.5px solid #0070ba;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background-color: #ffffff;
+        }
+        
+        .checkmark-tick {
+            width: 20px;
+            height: 10px;
+            border: 2.5px solid #0070ba;
+            border-top: none;
+            border-right: none;
+            transform: rotate(-45deg);
+            margin-top: -3px;
+            margin-left: -1px;
+        }
+        
+        .payment-text {
+            font-size: 24px;
+            font-weight: 300;
+            color: #2c2e2f;
+            margin-bottom: 12px;
+            letter-spacing: -0.2px;
+        }
+        
+        .amount-text {
+            font-weight: 600;
+            color: #2c2e2f;
+        }
+        
+        .recipient-text {
+            font-size: 15px;
+            color: #6c7378;
+            font-weight: 400;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .details-link {
+            color: #0070ba;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 400;
+            background-color: transparent;
+            border: 2px solid #0070ba;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+        
+        .details-link:hover {
+            background-color: #0070ba;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        
+        .messenger-notification {
+            text-align: center;
+            padding: 28px 24px;
+            border-top: 1px solid #e7e8e9;
+            border-bottom: 1px solid #e7e8e9;
+            background-color: #ffffff;
+        }
+        
+        .messenger-text {
+            font-size: 16px;
+            color: #2c2e2f;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+        
+        .expand-section {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e7e8e9;
+        }
+        
+        .expand-button {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 16px 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0;
+            transition: background-color 0.2s ease;
+        }
+        
+        .expand-button:hover {
+            background-color: #f7f8f9;
+        }
+        
+        .chevron-up {
+            width: 12px;
+            height: 12px;
+            border-top: 2px solid #0070ba;
+            border-right: 2px solid #0070ba;
+            transform: rotate(-45deg);
+        }
+        
+        .details-content {
+            padding: 0 24px 100px;
+            background-color: #ffffff;
+        }
+        
+        .detail-section {
+            margin-bottom: 32px;
+        }
+        
+        .section-header {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c2e2f;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+        
+        .payment-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        
+        .payment-method {
+            font-size: 15px;
+            color: #2c2e2f;
+            font-weight: 400;
+        }
+        
+        .payment-amount {
+            font-size: 15px;
+            color: #2c2e2f;
+            font-weight: 600;
+        }
+        
+        .currency-code {
+            font-size: 12px;
+            color: #6c7378;
+            font-weight: 400;
+            margin-left: 2px;
+        }
+        
+        .statement-info {
+            font-size: 13px;
+            color: #6c7378;
+            line-height: 1.4;
+            margin-top: 8px;
+        }
+        
+        .shipping-info {
+            line-height: 1.4;
+        }
+        
+        .recipient-name {
+            font-size: 15px;
+            color: #2c2e2f;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .address-line {
+            font-size: 15px;
+            color: #2c2e2f;
+            font-weight: 400;
+            margin-bottom: 2px;
+        }
+        
+        .purchase-item {
+            margin-bottom: 16px;
+        }
+        
+        .purchase-label {
+            font-size: 15px;
+            color: #2c2e2f;
+            font-weight: 500;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        
+        .purchase-value {
+            font-size: 15px;
+            color: #2c2e2f;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+        
+        .merchant-name {
+            font-size: 15px;
+            color: #2c2e2f;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+        
+        .return-button {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            background-color: #e1e7eb;
+            border: none;
+            border-top: 1px solid #d1d2d3;
+            padding: 18px 24px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            font-family: inherit;
+            border-radius: 0;
+            transition: background-color 0.2s ease;
+        }
+        
+        .return-button:hover {
+            background-color: #005ea6;
+        }
+        
+        .return-button:active {
+            background-color: #004c87;
+        }
+        
+        /* Ensure proper mobile viewport */
+        @media (max-width: 375px) {
+            .container {
+                max-width: 100%;
+                border-left: none;
+                border-right: none;
+            }
+            
+            .return-button {
+                max-width: 100%;
+            }
+        }
+        
+        /* Larger screens */
+        @media (min-width: 376px) {
+            .container {
+                box-shadow: 0 0 8px rgba(0,0,0,0.1);
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            
+            .return-button {
+                border-radius: 0 0 8px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with PayPal Logo -->
+        <div class="header-section">
+            <svg class="paypal-logo" viewBox="0 0 100 26" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#003087" d="M12.017 0L1.605 20.065h5.962L17.883 0z"/>
+                <path fill="#009cde" d="M35.229 0L24.817 20.065h5.962L40.095 0z"/>
+                <path fill="#003087" d="M7.729 0L2.53 12.524h4.499L11.528 0z"/>
+                <path fill="#009cde" d="M30.841 0L25.642 12.524h4.499L34.64 0z"/>
+                <path fill="#012169" d="M.5 23.897h7.625c3.45 0 6.214-1.009 7.808-2.847 1.418-1.635 1.652-3.735.646-5.768-.895-1.808-2.632-3.11-4.934-3.687-.697-.175-1.49-.263-2.37-.263H2.39L.5 23.897zm4.813-8.538h1.67c1.907 0 2.757.52 2.757 1.687 0 1.188-.85 1.896-2.222 1.896H6.85l-1.537-3.583z"/>
+                <path fill="#0070ba" d="M23.612 23.897h7.625c3.45 0 6.214-1.009 7.808-2.847 1.418-1.635 1.652-3.735.646-5.768-.895-1.808-2.632-3.11-4.934-3.687-.697-.175-1.49-.263-2.37-.263H25.502l-1.89 12.565zm4.813-8.538h1.67c1.907 0 2.757.52 2.757 1.687 0 1.188-.85 1.896-2.222 1.896h-1.668l-1.537-3.583z"/>
+                <path fill="#003087" d="M46.605 11.332c-.697-.175-1.49-.263-2.37-.263h-6.885l-1.89 12.565h2.962l.646-4.296h2.222c3.45 0 6.214-1.009 7.808-2.847 1.418-1.635 1.652-3.735.646-5.768-.895-1.545-2.632-2.847-4.934-3.424l1.795-11.964z"/>
+                <path fill="#009cde" d="M69.717 11.332c-.697-.175-1.49-.263-2.37-.263h-6.885l-1.89 12.565h2.962l.646-4.296h2.222c3.45 0 6.214-1.009 7.808-2.847 1.418-1.635 1.652-3.735.646-5.768-.895-1.545-2.632-2.847-4.934-3.424l1.795-11.964z"/>
+                <path fill="#012169" d="M86.817 15.035c0-1.868-1.243-3.336-3.479-4.08-.234-.078-.489-.155-.763-.233-.509-.144-.763-.288-.763-.565 0-.399.509-.632 1.243-.632.763 0 1.507.233 2.251.699l1.018-2.68c-.763-.466-1.781-.699-3.035-.699-2.508 0-4.28 1.312-4.28 3.336 0 1.724 1.243 2.836 3.479 3.58.509.166.763.332.763.609 0 .466-.509.699-1.243.699-.763 0-1.526-.233-2.29-.699l-1.018 2.68c.763.466 1.8.699 3.054.699 2.508 0 4.062-1.146 4.062-3.714z"/>
+                <path fill="#0070ba" d="M95.183 23.634c2.508 0 4.062-1.146 4.062-3.714 0-1.868-1.243-3.336-3.479-4.08-.234-.078-.489-.155-.763-.233-.509-.144-.763-.288-.763-.565 0-.399.509-.632 1.243-.632.763 0 1.507.233 2.251.699l1.018-2.68c-.763-.466-1.781-.699-3.035-.699-2.508 0-4.28 1.312-4.28 3.336 0 1.724 1.243 2.836 3.479 3.58.509.166.763.332.763.609 0 .466-.509.699-1.243.699-.763 0-1.526-.233-2.29-.699l-1.018 2.68c.763.466 1.8.699 3.054.699z"/>
+            </svg>
+        </div>
+        
+        <!-- Success Message Section -->
+        <div class="success-section">
+            <div class="checkmark-container">
+                <div class="checkmark-circle">
+                    <div class="checkmark-tick"></div>
+                </div>
+            </div>
+            <div class="payment-text">You paid <span class="amount-text">$2.00 USD</span></div>
+            <div class="recipient-text">to Michael Pina dba Michael Pina</div>
+            <a href="#" class="details-link">Details</a>
+        </div>
+        
+        <!-- Messenger Notification Section -->
+        <div class="messenger-notification">
+            <div class="messenger-text">Get PayPal Notifications in Messenger</div>
+        </div>
+        
+        <!-- Expand Section -->
+        <div class="expand-section">
+            <button class="expand-button">
+                <div class="chevron-up"></div>
+            </button>
+        </div>
+        
+        <!-- Details Content -->
+        <div class="details-content">
+            <!-- Paid With Section -->
+            <div class="detail-section">
+                <div class="section-header">Paid with</div>
+                <div class="payment-info">
+                    <div class="payment-method">Visa x-0992</div>
+                    <div class="payment-amount">$2.00<span class="currency-code">USD</span></div>
+                </div>
+                <div class="statement-info">This transaction will appear on your statement as PAYPAL *MICHAELPINA</div>
+            </div>
+            
+            <!-- Shipped To Section -->
+            <div class="detail-section">
+                <div class="section-header">Shipped to</div>
+                <div class="shipping-info">
+                    <div class="recipient-name">Michael Pina</div>
+                    <div class="address-line">313 strand st</div>
+                    <div class="address-line">Santa Monica, AZ 90405</div>
+                    <div class="address-line">United States</div>
+                </div>
+            </div>
+            
+            <!-- Purchase Details Section -->
+            <div class="detail-section">
+                <div class="section-header">Purchase details</div>
+                <div class="purchase-item">
+                    <div class="purchase-label">Receipt number: 1860719633887668</div>
+                </div>
+                <div class="purchase-item">
+                    <div class="purchase-label">We'll send confirmation to:</div>
+                    <div class="purchase-value">mikeyapina@gmail.com</div>
+                </div>
+            </div>
+            
+            <!-- Merchant Details Section -->
+            <div class="detail-section">
+                <div class="section-header">Merchant details</div>
+                <div class="merchant-name">Michael Pina dba Michael Pina</div>
+            </div>
+        </div>
+        
+        <!-- Return Button -->
+        <button class="return-button">Return to Merchant</button>
+    </div>
+</body>
+</html>
