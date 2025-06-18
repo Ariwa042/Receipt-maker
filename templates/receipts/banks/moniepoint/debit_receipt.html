@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,17 +88,17 @@
         }
         
         .logo {
-            background: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            color: #2563eb;
-            margin-right: 12px;
-            font-size: 18px;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+        
+        .bank-logo {
+            width: 150px;
+            height: auto;
+            object-fit: contain;
         }
         
         .brand-name {
@@ -143,16 +144,19 @@
         }
         
         .moniepoint-icon {
-            background: #2563eb;
             width: 50px;
             height: 50px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
+            overflow: hidden;
+        }
+
+        .moniepoint-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         .detail-item {
@@ -237,15 +241,18 @@
     
     <div class="container">
         <div class="header">
-            <div class="logo">M</div>
-            <div class="brand-name">Moniepoint</div>
+            <div class="logo">
+                <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'images/bank/moniepoint-logo.png' %}" alt="Moniepoint" class="bank-logo">
+            </div>
         </div>
         
         <div class="receipt-card">            <div class="credit-label">{{ receipt.transaction_type|default:"DEBIT"|upper }}</div>
             
             <div class="amount-section">
                 <div class="amount">{{ receipt.currency_symbol|default:"₦" }}{{ receipt.amount|floatformat:2|default:"0.00" }}</div>
-                <div class="moniepoint-icon">M</div>
+                <div class="moniepoint-icon">
+                    <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'images/bank/moniepoint-logo2.jpeg' %}" alt="Moniepoint">
+                </div>
             </div>
             <div class="inner-card">                <div class="detail-item">
                     <div class="detail-label">Transaction Type</div>
