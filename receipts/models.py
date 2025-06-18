@@ -11,6 +11,8 @@ BANK_TEMPLATES= [
     ('paypal', 'PayPal'),
     ('transfer_wise', 'Transfer Wise'),
     ('access_bank', 'Access Bank'),
+    ('opay', 'OPay'),
+    ('moniepoint', 'Moniepoint'),
     ('google_pay', 'Google Pay'),
     ('banco_popular', 'Banco Popular'),
     ('iptu', 'IPTU'),

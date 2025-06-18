@@ -24,26 +24,25 @@
     <!-- Transaction Details -->
     <div class="transaction-details" style="margin: 20px 0; padding: 15px; background-color: #f9f9f9;">
         <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Transaction Date:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.date|date:"d M Y H:i:s" }}</td>
+            <tr>                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Transaction Date:</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.transaction_date|date:"F j, Y \a\t g:i A"|default:"" }}</td>
             </tr>
             <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Transaction Reference:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">FBN{{ receipt.id|stringformat:"010d" }}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Transaction ID:</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.transaction_id|default:"" }}</td>
             </tr>
             <tr>
                 <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Account Number:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.beneficiary_account_number }}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.beneficiary_account_number|default:"" }}</td>
             </tr>
             <tr>
                 <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Account Name:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.beneficiary_name }}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.beneficiary_name|default:"" }}</td>
             </tr>
             <tr>
                 <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Amount:</td>
                 <td style="padding: 8px; border-bottom: 1px solid #ddd; font-weight: bold; color: #003b65;">
-                    ₦{{ receipt.amount|floatformat:2 }}
+                    {{ receipt.currency_symbol|default:"₦" }}{{ receipt.amount|floatformat:2|default:"0.00" }}
                 </td>
             </tr>
             <tr>

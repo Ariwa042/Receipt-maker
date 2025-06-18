@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -202,47 +203,45 @@
         <div class="success-area">
             <div class="checkmark-circle">
                 <div class="checkmark"></div>
-            </div>
-            <div class="comprobante-text">COMPROBANTE</div>
-            <div class="amount-large">RD$-9,000.00</div>
-            <div class="success-message">Tu transferencia ha sido realizada</div>
+            </div>            <div class="comprobante-text">COMPROBANTE</div>            
+            <div class="amount-large">{{ receipt.get_currency_display }}-{{ receipt.formatted_amount }}</div>
+            <div class="success-message">{{ receipt.status_message|default:"Tu transferencia ha sido realizada" }}</div>
         </div>
         
-        <div class="details-section">
-            <div class="detail-row">
+        <div class="details-section">            <div class="detail-row">
                 <div class="detail-left">Desde cuenta:</div>
                 <div class="detail-right">
-                    <div class="detail-main">Cuenta de ahorros</div>
-                    <div class="detail-sub">*****2879</div>
+                    <div class="detail-main">{{ receipt.account_type|default:"Cuenta de ahorros" }}</div>
+                    <div class="detail-sub">*****{{ receipt.your_account_number|slice:"-4:" }}</div>
                 </div>
             </div>
             
             <div class="detail-row">
                 <div class="detail-left">Beneficiario:</div>
                 <div class="detail-right">
-                    <div class="detail-main">Sr Dario A Montalvo Martinez</div>
-                    <div class="detail-sub">0837097179</div>
+                    <div class="detail-main">{{ receipt.beneficiary_name }}</div>
+                    <div class="detail-sub">{{ receipt.beneficiary_bank }}</div>
                 </div>
             </div>
             
             <div class="detail-row">
                 <div class="detail-left">Fecha:</div>
                 <div class="detail-right">
-                    <div class="single-value">05 feb 2025 - 07:54 p.m.</div>
+                    <div class="single-value">{{ receipt.transaction_date|date:"d M Y" }} - {{ receipt.transaction_date|date:"h:i a"|lower }}</div>
                 </div>
             </div>
             
             <div class="detail-row">
                 <div class="detail-left">Impuesto DGII 0.15%:</div>
                 <div class="detail-right">
-                    <div class="single-value">RD$13.50</div>
+                    <div class="single-value">{{ receipt.get_currency_display }}{{ receipt.tax_amount|floatformat:2|default:"0.00" }}</div>
                 </div>
             </div>
             
-            <div class="detail-row">
+            <div class="detail-row">                
                 <div class="detail-left">No. de referencia:</div>
                 <div class="detail-right">
-                    <div class="single-value">502050754</div>
+                    <div class="single-value">{{ receipt.transaction_id }}</div>
                 </div>
             </div>
         </div>

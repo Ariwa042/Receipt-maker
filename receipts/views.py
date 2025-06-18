@@ -69,8 +69,12 @@ def generate_receipt_image(request, template_name, context):
         html_content = render(request, template_name, context).content.decode()
         page.set_content(html_content)
         
+        # Wait for images to load
+        page.wait_for_load_state('networkidle')
+        page.wait_for_selector('img')
+        
         # Wait for any lazy-loaded content and animations
-        page.wait_for_timeout(1000)
+        page.wait_for_timeout(2000)
         
         # Create temp file
         with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:

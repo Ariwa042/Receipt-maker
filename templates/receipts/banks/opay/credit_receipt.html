@@ -1,0 +1,214 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPay Transaction Receipt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background-color: #e8e8e8;
+            padding: 20px;
+            display: contents;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .receipt {
+            width: 100%;
+            max-width: 100%;
+            min-height: 100vh;
+            background: #f0f1f3;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Perforated top edge */
+
+
+        /* Perforated bottom edge */
+        
+        .receipt-content {
+            background: #f0f1f3;
+            padding: 24px 20px 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-image {
+            width: 80px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .receipt-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-top: 4px;
+        }
+
+        .amount-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .amount {
+            font-size: 52px;
+            font-weight: 600;
+            color: #00c896;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .status {
+            font-size: 22px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .timestamp {
+            font-size: 15px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 28px 0;
+        }
+
+        .details-section {
+            margin-bottom: 30px;
+        }
+
+        .detail-item {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            font-size: 14px;
+            color: #888;
+            font-weight: 400;
+            flex: 1;
+        }
+
+        .detail-value {
+            font-size: 15px;
+            color: #1a1a1a;
+            font-weight: 500;
+            line-height: 1.3;
+            flex: 1;
+            text-align: right;
+        }
+
+        .detail-value-right {
+            text-align: right;
+        }
+
+        .footer {
+            background: #f0f1f3;
+            padding: 16px 20px 20px;
+            margin: 0 -20px -20px;
+            border-radius: 0 0 16px 16px;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #666;
+        }
+
+        @media (max-width: 400px) {
+            body {
+                padding: 10px;
+            }
+            .receipt {
+                max-width: 100%;
+            }
+            .amount {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt">
+        <div class="receipt-content">
+            <div class="header">                
+                <div class="logo-section">
+                    <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'images/bank/opay-logo.png' %}" alt="OPay" class="logo-image">
+                </div>
+                <div class="receipt-title">Transaction Receipt</div>
+            </div>
+
+            <div class="amount-section">
+                <div class="amount">₦{{ receipt.amount|floatformat:2|intcomma }}</div>
+                <div class="status">{{ receipt.status|title|default:"Successful" }}</div>
+                <div class="timestamp">{{ receipt.transaction_date|date:"M jS, Y H:i:s"|default:"Jun 16th, 2025 14:44:20" }}</div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="details-section">
+                <div class="detail-item">
+                    <div class="detail-label">Recipient Details</div>
+                    <div class="detail-value">
+                        {{ receipt.your_name|upper|default:"*******" }}<br>
+                        {{ receipt.your_bank|upper|default:"OPAY" }} | {% if receipt.your_account_number %}*********{{ receipt.your_account_number|slice:"-4:" }}{% else %}*******{% endif %}
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Sender Details</div>
+                    <div class="detail-value">
+                        {{ receipt.sender_name|upper|default:"*******" }}<br>
+                        {{ receipt.sender_bank|upper|default:"" }} | {% if receipt.sender_account_number %}*********{{ receipt.sender_account_number|slice:"-4:" }}{% else %}*******{% endif %}
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Transaction No.</div>
+                    <div class="detail-value">{{ receipt.payment_id|default:"250616201002857709048885" }}</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Session ID</div>
+                    <div class="detail-value detail-value-right">{{ receipt.session_id|default:"100004250616134425134885744844" }}</div>
+                </div>
+
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="footer">
+                 Enjoy a better life with OPay. Get free transfers, withdrawals, bill payments, instant loans, and good annual interest On your savings. OPay is licensed by the Central Bank of Nigeria and insured by the NDIC.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

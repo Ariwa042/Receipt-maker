@@ -279,16 +279,15 @@
                 <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='40' fill='%23666'/%3E%3Ccircle cx='40' cy='30' r='12' fill='%23999'/%3E%3Cpath d='M20 60 Q20 45 40 45 Q60 45 60 60' fill='%23999'/%3E%3C/svg%3E" alt="Anbu Mani">
             </div>
             
-            <div class="recipient-info">
-                <div class="recipient-name">To Anbu Mani</div>
-                <div class="recipient-phone">+91 98422 59129</div>
+            <div class="recipient-info">                
+                <div class="recipient-name">To {{ receipt.recipient_name|default:"Recipient" }}</div>
             </div>
             
-            <div class="amount">₹5,000</div>
+            <div class="amount">{{ receipt.currency_symbol|default:"$" }}{{ receipt.amount|floatformat:2|default:"0.00" }}</div>
             
             <div class="status-section">
                 <div class="status-icon"></div>
-                <div class="status-text">Completed • March 6, 2022 at 1:14 PM</div>
+                <div class="status-text">Completed • {{ receipt.date|date:"F j, Y \a\t g:i A"|default:"" }}</div>
             </div>
             
             <div class="details-card">
@@ -297,9 +296,9 @@
                         <div class="bank-logo">
                             <i class="fas fa-university"></i>
                         </div>
-                        <div class="bank-details">
-                            <div class="bank-name">State Bank of India</div>
-                            <div class="account-number">XXXXXX2483</div>
+                        <div class="bank-details">                            
+                            <div class="bank-name">{{ receipt.bank_name|default:"" }}</div>
+                            <div class="account-number">{{ receipt.account_number|default:"" }}</div>
                         </div>
                     </div>
                     <div class="dropdown-icon">
@@ -309,22 +308,19 @@
                 
                 <div class="detail-row">
                     <div class="detail-label">UPI transaction ID</div>
-                    <div class="detail-value">206513127684</div>
+                    <div class="detail-value">{{ receipt.transaction_id|default:"" }}</div>
                 </div>
                 
                 <div class="detail-row">
-                    <div class="detail-label">To: NAGARATHINAMA</div>
-                    <div class="detail-value">licanbumani2005-1@okaxis</div>
+                    <div class="detail-label">To: {{ receipt.recipient_name|default:"" }}</div>
                 </div>
                 
                 <div class="detail-row">
-                    <div class="detail-label">From: PUSHPARAJ R (State Bank of India)</div>
-                    <div class="detail-value">jackpushpa966@oksbi</div>
+                    <div class="detail-label">From: {{ receipt.sender_name|default:"" }} ({{ receipt.bank_name|default:"" }})</div>                    <div class="detail-value">{{ receipt.sender_upi|default:"" }}</div>
                 </div>
-                
-                <div class="detail-row">
+                  <div class="detail-row">
                     <div class="detail-label">Google transaction ID</div>
-                    <div class="detail-value">CICAgODV-rDadQ</div>
+                    <div class="detail-value">{{ receipt.session_id|default:"" }}</div>
                 </div>
             </div>
             

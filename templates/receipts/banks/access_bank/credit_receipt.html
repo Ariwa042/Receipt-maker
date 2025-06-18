@@ -244,65 +244,59 @@
             </div>
             
             <h1 class="title">Transaction Receipt</h1>
-            
-            <div class="generated-info">
-                Generated from AccessMore on 01/11/24<br>
-                14:32:42
+              <div class="generated-info">
+                Generated from AccessMore on {{ generation_date|date:"d/m/y" }}<br>
+                {{ generation_date|date:"H:i:s" }}
             </div>
         </div>
 
         <div class="content-wrapper">
-            <div class="transaction-details">
-                <div class="detail-group">
+            <div class="transaction-details">                <div class="detail-group">
                     <div class="detail-row">
                         <span class="detail-label">Transaction Amount</span>
-                        <span class="detail-value amount">₦130,000</span>
+                        <span class="detail-value amount">₦{{ amount|floatformat:2 }}</span>
                     </div>
 
                     <div class="detail-row">
                         <span class="detail-label">Transaction Type</span>
-                        <span class="detail-value">INTER-BANK</span>
+                        <span class="detail-value">{{ transaction_type }}</span>
                     </div>
 
                     <div class="detail-row">
                         <span class="detail-label">Transaction Date</span>
-                        <span class="detail-value">2024-11-01 14:32:42</span>
+                        <span class="detail-value">{{ transaction_date|date:"Y-m-d H:i:s" }}</span>
                     </div>
 
                     <div class="detail-row">
                         <span class="detail-label">Sender</span>
                         <div class="detail-value multi-line">
-                            <div>CHUKWUDI MUNACHISO ANAGO</div>
-                            <div>CHIBUEZE ARIRIATU</div>
+                            <div>{{ sender_name }}</div>
+                            <div>{{ account_name }}</div>
                         </div>
                     </div>
 
                     <div class="detail-row">
                         <span class="detail-label">Beneficiary</span>
                         <div class="detail-value multi-line">
-                            <div>0169269055</div>
-                            <div>Guaranty Trust Bank Plc</div>
+                            <div>{{ beneficiary_account_number }}</div>
+                            <div>{{ beneficiary_bank }}</div>
                         </div>
                     </div>
 
                     <div class="detail-row">
                         <span class="detail-label">Remark</span>
-                        <span class="detail-value">Chukwudi</span>
+                        <span class="detail-value">{{ remark }}</span>
                     </div>
 
                     <div class="detail-row">
                         <span class="detail-label">Transaction Reference</span>
-                        <span class="detail-value">NXG000014241101143242218716689226</span>
-                    </div>
-
-                    <div class="detail-row">
+                        <span class="detail-value">{{ transaction_reference }}</span>
+                    </div><div class="detail-row">
                         <span class="detail-label">Session Id</span>
-                        <span class="detail-value">000014241101143242218716689226</span>
-                    </div>
-
-                    <div class="detail-row">
+                        <span class="detail-value">{{ session_id }}</span>
+                    </div>                    <div class="detail-row">
                         <span class="detail-label">Transaction Status</span>
-                        <span class="detail-value status-success">Transfer Request Successful</span>
+                        <span class="detail-value status-success">{{ transaction_status }}</span>
                     </div>
                 </div>
 

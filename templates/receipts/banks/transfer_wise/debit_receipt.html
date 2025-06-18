@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -176,42 +177,40 @@
 <body>
     <div class="receipt-container">
         <div class="logo">
-            <img src="{% static 'images/bank/wise-logo.png' %}" alt="Wise Logo" class="wise-logo">
+            <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'images/bank/wise-logo.png' %}" alt="Wise Logo" class="wise-logo">
         </div>
 
         <div class="receipt-header">
             <h1 class="receipt-title">Debit Receipt</h1>
             
-            <div class="receipt-info">
-                <div class="left-info">
-                    <div class="info-line">Transfer #{{ receipt.transaction_id }}</div>
-                    <div class="info-line">Set up {{ receipt.created_at|date:"H:i d F Y" }} GMT</div>
-                    <div class="info-line">PDF downloaded {{ receipt.transaction_date|date:"H:i d F Y" }} GMT</div>
+            <div class="receipt-info">                <div class="left-info">
+                    <div class="info-line">Transfer #{{ receipt.transaction_id|default:"" }}</div>
+                    <div class="info-line">Set up {{ receipt.date|date:"H:i d F Y"|default:"" }} GMT</div>
+                    <div class="info-line">PDF downloaded {{ receipt.date|date:"H:i d F Y"|default:"" }} GMT</div>
                 </div>
                 <div class="right-info">
                     <div class="info-line">Sender Details</div>
-                    <div class="info-line">{{ receipt.your_name }}</div>
-                    <div class="info-line">{{ receipt.your_bank.type }}</div>
+                    <div class="info-line">{{ receipt.your_name|default:"" }}</div>
+                    <div class="info-line">{{ receipt.your_bank.type|default:"" }}</div>
                 </div>
             </div>
         </div>
 
         <h2 class="section-title">Transfer Overview</h2>
 
-        <div class="transfer-details">
-            <div class="detail-group">
+        <div class="transfer-details">            <div class="detail-group">
                 <div class="detail-label">You send</div>
-                <div class="detail-value">{{ receipt.get_currency_display }}{{ receipt.formatted_amount }}</div>
+                <div class="detail-value">{{ receipt.currency_symbol|default:"$" }}{{ receipt.amount|floatformat:2|default:"0.00" }}</div>
                 
                 <div class="detail-label">Recipient gets</div>
-                <div class="detail-value">{{ receipt.get_currency_display }}{{ receipt.formatted_amount }}</div>
+                <div class="detail-value">{{ receipt.currency_symbol|default:"$" }}{{ receipt.amount|floatformat:2|default:"0.00" }}</div>
             </div>
             <div class="detail-group">
                 <div class="detail-label">Status</div>
-                <div class="detail-value">{{ receipt.receipt_status }}</div>
+                <div class="detail-value">{{ receipt.status|default:"Completed" }}</div>
                 
                 <div class="detail-label">Transaction Fee</div>
-                <div class="detail-value">{{ receipt.get_currency_display }}0.00</div>
+                <div class="detail-value">{{ receipt.currency_symbol|default:"$" }}{{ receipt.fee|floatformat:2|default:"0.00" }}</div>
             </div>
         </div>
 
@@ -230,9 +229,9 @@
                     <div class="reference-value">{{ receipt.transaction_id }}</div>
                 </div>
                 <div class="payment-right">
-                    <div class="account-label">Account Details</div>
-                    <div class="account-value">Bank: {{ receipt.beneficiary_bank }}</div>
-                    <div class="account-value">Account number: {{ receipt.beneficiary_account_number }}</div>
+                    <div class="account-label">Account Details</div>                    
+                    <div class="account-value">Bank: {{ receipt.beneficiary_bank|default:"" }}</div>
+                    <div class="account-value">Account number: {{ receipt.beneficiary_account_number|default:"" }}</div>
                 </div>
             </div>
         </div>

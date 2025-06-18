@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidelity Bank Transaction Receipt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 10px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .receipt {
+            background-color: #f5f5f5;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        
+        .title-section {
+            flex: 1;
+        }
+        
+        .main-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 2px;
+            color: #000;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 13px;
+            font-weight: normal;
+        }
+        
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .bank-logo {
+            width: 150px;
+            height: auto;
+            object-fit: contain;
+        }
+        
+        .logo-square {
+            width: 35px;
+            height: 35px;
+            margin-right: 8px;
+            position: relative;
+            background: #1e40af;
+        }
+        
+        .logo-square::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 45%;
+            height: 45%;
+            background: #000;
+        }
+        
+        .transaction-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid #000;
+            gap: 15px;
+        }
+        
+        .transaction-row:last-child {
+            border-bottom: none;
+        }
+        
+        .label {
+            font-weight: 400;
+            color: #000;
+            font-size: 14px;
+            min-width: 80px;
+            flex-shrink: 0;
+        }
+        
+        .value {
+            text-align: right;
+            color: #000;
+            font-size: 14px;
+            flex: 1;
+            line-height: 1.4;
+        }
+        
+        .amount {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .footer-section {
+            margin-top: 25px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .qr-code {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .qr-code-image {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+        }
+        
+        .qr-dots {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .qr-dots::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border: 2px solid black;
+        }
+        
+        .qr-dots::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border: 2px solid black;
+        }
+        
+        .qr-pattern {
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, white 1px, transparent 1px),
+                radial-gradient(circle at 40% 20%, white 1px, transparent 1px),
+                radial-gradient(circle at 60% 20%, white 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, white 1px, transparent 1px),
+                radial-gradient(circle at 20% 40%, white 1px, transparent 1px),
+                radial-gradient(circle at 60% 40%, white 1px, transparent 1px),
+                radial-gradient(circle at 20% 60%, white 1px, transparent 1px),
+                radial-gradient(circle at 40% 60%, white 1px, transparent 1px),
+                radial-gradient(circle at 80% 60%, white 1px, transparent 1px),
+                radial-gradient(circle at 20% 80%, white 1px, transparent 1px),
+                radial-gradient(circle at 60% 80%, white 1px, transparent 1px);
+            background-size: 4px 4px;
+        }
+        
+        .footer-text {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #000;
+            flex: 1;
+        }
+        
+        .promo-section {
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        
+        .promo-text {
+            flex: 1;
+        }
+        
+        .promo-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #000;
+        }
+        
+        .ivy-text {
+            color: #22c55e;
+        }
+        
+        .whatsapp-text {
+            color: #1e40af;
+        }
+        
+        .promo-subtitle {
+            font-size: 12px;
+            color: #000;
+            line-height: 1.4;
+        }
+        
+        .phone-number {
+            font-weight: bold;
+            color: #1e40af;
+        }
+        
+        .character-image {
+            width: 70px;
+            height: 80px;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .character {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .character-body {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 60px;
+            background: #22c55e;
+            border-radius: 25px 25px 0 0;
+        }
+        
+        .character-head {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: #d4a574;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        
+        .character-hair {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 35px;
+            background: #4a2c2a;
+            border-radius: 50% 50% 30% 30%;
+            z-index: 1;
+        }
+        
+        .character-arm {
+            position: absolute;
+            right: 8px;
+            top: 35px;
+            width: 15px;
+            height: 25px;
+            background: #d4a574;
+            border-radius: 10px;
+            transform: rotate(-15deg);
+            z-index: 3;
+        }
+        
+        .phone {
+            position: absolute;
+            right: 5px;
+            top: 30px;
+            width: 8px;
+            height: 15px;
+            background: #333;
+            border-radius: 2px;
+            z-index: 4;
+        }
+        
+        .necklace {
+            position: absolute;
+            top: 38px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 8px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        
+        @media (max-width: 480px) {
+            .receipt {
+                padding: 15px 12px;
+            }
+            
+            .main-title {
+                font-size: 18px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .logo-square {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .transaction-row {
+                gap: 10px;
+            }
+            
+            .label {
+                min-width: 70px;
+                font-size: 13px;
+            }
+            
+            .value {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt">
+        <div class="header">
+            <div class="title-section">
+                <div class="main-title">Online Banking</div>
+                <div class="subtitle">Transaction Receipt</div>
+            </div>
+            <div class="logo">
+                <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'images/bank/fidelity-logo.png' %}" alt="Fidelity Bank" class="bank-logo">
+            </div>
+        </div>
+        
+        <div class="transaction-table">
+            <div class="transaction-row">
+                <div class="label">Payer</div>
+                <div class="value">
+                    {{ receipt.sender_name|upper|default:"*******" }}<br>
+                    {% if receipt.sender_account_number %}{{ receipt.sender_account_number|slice:":3" }}****{{ receipt.sender_account_number|slice:"-3:" }}{% else %}*******{% endif %}<br>
+                    {{ receipt.sender_bank|upper|default:"*******" }}
+                </div>
+            </div>
+            
+            <div class="transaction-row">
+                <div class="label">Receiver</div>
+                <div class="value">
+                    {{ receipt.your_name|upper|default:"*******" }}<br>
+                    {% if receipt.your_account_number %}{{ receipt.your_account_number|slice:":3" }}****{{ receipt.your_account_number|slice:"-3:" }}{% else %}*******{% endif %}<br>
+                    {{ receipt.your_bank|upper|default:"*******" }}
+                </div>
+            </div>
+            
+            <div class="transaction-row">
+                <div class="label">Transaction</div>
+                <div class="value">
+                    <div class="amount">{{ receipt.country.currency_code }} {{ receipt.amount|floatformat:2|intcomma }}</div>
+                    {% if receipt.receipt_status %}{{ receipt.receipt_status|upper }}{% else %}INTERTRANSFER{% endif %}<br>
+                    {{ receipt.transaction_date|date:"d M Y, g:i a" }} GMT+1
+                </div>
+            </div>
+            
+            <div class="transaction-row">
+                <div class="label">Narration</div>
+                <div class="value">
+                    {{ receipt.remarks }}
+                </div>
+            </div>
+            
+            <div class="transaction-row">
+                <div class="label">Reference</div>
+                <div class="value">
+                    {{ receipt.transaction_id }}<br>
+                    SUCCESSFUL
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-section">
+            <div class="qr-code">
+                <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'images/bank/fidelity_qrcode.png' %}" alt="Fidelity QR Code" class="qr-code-image">
+            </div>
+            <div class="footer-text">
+                This is an electronic receipt of a transaction and does not require any signature. The authenticity of transaction can be confirmed with the Bank.<br><br>
+                For any other assistance, kindly call True Serve on 0700 3233 5489 or email true.serve@fidelitybank.ng
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

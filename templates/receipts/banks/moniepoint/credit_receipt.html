@@ -1,0 +1,288 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moniepoint Receipt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .background-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .shape {
+            position: absolute;
+            background: #fbbf24;
+            border-radius: 50px;
+        }
+        
+        .shape1 {
+            width: 200px;
+            height: 80px;
+            top: 50px;
+            right: -50px;
+            transform: rotate(30deg);
+        }
+        
+        .shape2 {
+            width: 300px;
+            height: 120px;
+            bottom: -60px;
+            left: -100px;
+            transform: rotate(-20deg);
+        }
+        
+        .shape3 {
+            width: 150px;
+            height: 60px;
+            bottom: 200px;
+            right: -30px;
+            transform: rotate(45deg);
+        }
+        
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .inner-card {
+            background-color: #f3f9ff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+        
+        .logo {
+            background: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #2563eb;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+        
+        .brand-name {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .receipt-card {
+            max-height: 40rem;
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            flex-grow: 1;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .credit-label {
+            background: #dbeafe;
+            color: #2563eb;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-block;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .amount-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+        .amount {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1f2937;
+            letter-spacing: -1px;
+        }
+        
+        .moniepoint-icon {
+            background: #2563eb;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .detail-item {
+            margin-bottom: 24px;
+        }
+        
+        .detail-label {
+            color: #9ca3af;
+            font-size: 14px;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        
+        .detail-value {
+            color: #1f2937;
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+        
+        .transfer-badge {
+            background: #dbeafe;
+            color: #2563eb;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-block;
+        }
+        
+        .bottom-decoration {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: white;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 8px;
+        }
+        
+        .dots {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: #2563eb;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+        
+        .dot:nth-child(even) {
+            opacity: 0.4;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .amount {
+                font-size: 28px;
+            }
+            
+            .receipt-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+        <div class="shape shape3"></div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="logo">M</div>
+            <div class="brand-name">Moniepoint</div>
+        </div>
+        
+        <div class="receipt-card">            <div class="credit-label">{{ receipt.transaction_type|default:"CREDIT"|upper }}</div>
+            
+            <div class="amount-section">
+                <div class="amount">{{ receipt.currency_symbol|default:"₦" }}{{ receipt.amount|floatformat:2|default:"0.00" }}</div>
+                <div class="moniepoint-icon">M</div>
+            </div>
+            <div class="inner-card">
+                <div class="detail-item">
+                    <div class="detail-label">Transaction Type</div>
+                    <div class="detail-value">
+                        <span class="transfer-badge">{{ receipt.transaction_type|default:"Transfer" }}</span>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Sender Name</div>
+                    <div class="detail-value">{{ receipt.sender_name|default:""|upper }}</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Source Institution</div>
+                    <div class="detail-value">{{ receipt.bank_name|default:"" }}</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Transaction Date</div>
+                    <div class="detail-value">{{ receipt.date|date:"l, F jS, Y | g:i A"|default:"" }}</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Transaction Reference</div>
+                    <div class="detail-value">{{ receipt.transaction_id|default:"" }}</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Business Name</div>
+                    <div class="detail-value">{{ receipt.recipient_name|default:""|upper }}</div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+</html>
