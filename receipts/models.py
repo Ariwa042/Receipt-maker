@@ -15,6 +15,7 @@ BANK_TEMPLATES= [
     ('moniepoint', 'Moniepoint'),
     ('fidelity_bank', 'Fidelity Bank'),
     ('google_pay', 'Google Pay'),
+    ('paypal', 'PayPal'),
     ('banco_popular', 'Banco Popular'),
     ('iptu', 'IPTU'),
     ('bank_of_america', 'Bank of America'),

@@ -1,3 +1,5 @@
+{% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -315,20 +317,8 @@
     <div class="container">
         <!-- Header with PayPal Logo -->
         <div class="header-section">
-            <svg class="paypal-logo" viewBox="0 0 100 26" xmlns="http://www.w3.org/2000/svg">
-                <path fill="#003087" d="M12.017 0L1.605 20.065h5.962L17.883 0z"/>
-                <path fill="#009cde" d="M35.229 0L24.817 20.065h5.962L40.095 0z"/>
-                <path fill="#003087" d="M7.729 0L2.53 12.524h4.499L11.528 0z"/>
-                <path fill="#009cde" d="M30.841 0L25.642 12.524h4.499L34.64 0z"/>
-                <path fill="#012169" d="M.5 23.897h7.625c3.45 0 6.214-1.009 7.808-2.847 1.418-1.635 1.652-3.735.646-5.768-.895-1.808-2.632-3.11-4.934-3.687-.697-.175-1.49-.263-2.37-.263H2.39L.5 23.897zm4.813-8.538h1.67c1.907 0 2.757.52 2.757 1.687 0 1.188-.85 1.896-2.222 1.896H6.85l-1.537-3.583z"/>
-                <path fill="#0070ba" d="M23.612 23.897h7.625c3.45 0 6.214-1.009 7.808-2.847 1.418-1.635 1.652-3.735.646-5.768-.895-1.808-2.632-3.11-4.934-3.687-.697-.175-1.49-.263-2.37-.263H25.502l-1.89 12.565zm4.813-8.538h1.67c1.907 0 2.757.52 2.757 1.687 0 1.188-.85 1.896-2.222 1.896h-1.668l-1.537-3.583z"/>
-                <path fill="#003087" d="M46.605 11.332c-.697-.175-1.49-.263-2.37-.263h-6.885l-1.89 12.565h2.962l.646-4.296h2.222c3.45 0 6.214-1.009 7.808-2.847 1.418-1.635 1.652-3.735.646-5.768-.895-1.545-2.632-2.847-4.934-3.424l1.795-11.964z"/>
-                <path fill="#009cde" d="M69.717 11.332c-.697-.175-1.49-.263-2.37-.263h-6.885l-1.89 12.565h2.962l.646-4.296h2.222c3.45 0 6.214-1.009 7.808-2.847 1.418-1.635 1.652-3.735.646-5.768-.895-1.545-2.632-2.847-4.934-3.424l1.795-11.964z"/>
-                <path fill="#012169" d="M86.817 15.035c0-1.868-1.243-3.336-3.479-4.08-.234-.078-.489-.155-.763-.233-.509-.144-.763-.288-.763-.565 0-.399.509-.632 1.243-.632.763 0 1.507.233 2.251.699l1.018-2.68c-.763-.466-1.781-.699-3.035-.699-2.508 0-4.28 1.312-4.28 3.336 0 1.724 1.243 2.836 3.479 3.58.509.166.763.332.763.609 0 .466-.509.699-1.243.699-.763 0-1.526-.233-2.29-.699l-1.018 2.68c.763.466 1.8.699 3.054.699 2.508 0 4.062-1.146 4.062-3.714z"/>
-                <path fill="#0070ba" d="M95.183 23.634c2.508 0 4.062-1.146 4.062-3.714 0-1.868-1.243-3.336-3.479-4.08-.234-.078-.489-.155-.763-.233-.509-.144-.763-.288-.763-.565 0-.399.509-.632 1.243-.632.763 0 1.507.233 2.251.699l1.018-2.68c-.763-.466-1.781-.699-3.035-.699-2.508 0-4.28 1.312-4.28 3.336 0 1.724 1.243 2.836 3.479 3.58.509.166.763.332.763.609 0 .466-.509.699-1.243.699-.763 0-1.526-.233-2.29-.699l-1.018 2.68c.763.466 1.8.699 3.054.699z"/>
-            </svg>
+            <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'images/bank/paypal-logo.png' %}" class="paypal-logo" alt="PayPal Logo">
         </div>
-        
         <!-- Success Message Section -->
         <div class="success-section">
             <div class="checkmark-container">
@@ -336,65 +326,58 @@
                     <div class="checkmark-tick"></div>
                 </div>
             </div>
-            <div class="payment-text">You paid <span class="amount-text">$2.00 USD</span></div>
-            <div class="recipient-text">to Michael Pina dba Michael Pina</div>
+            <div class="payment-text">You paid <span class="amount-text">${{ receipt.amount|floatformat:2|intcomma }} <span class="currency-code">{{ receipt.country.currency_code|default:"USD" }}</span></span></div>
+            <div class="recipient-text">to {{ receipt.your_name }}</div>
             <a href="#" class="details-link">Details</a>
         </div>
-        
         <!-- Messenger Notification Section -->
         <div class="messenger-notification">
             <div class="messenger-text">Get PayPal Notifications in Messenger</div>
         </div>
-        
         <!-- Expand Section -->
         <div class="expand-section">
             <button class="expand-button">
                 <div class="chevron-up"></div>
             </button>
         </div>
-        
         <!-- Details Content -->
         <div class="details-content">
             <!-- Paid With Section -->
             <div class="detail-section">
                 <div class="section-header">Paid with</div>
                 <div class="payment-info">
-                    <div class="payment-method">Visa x-0992</div>
-                    <div class="payment-amount">$2.00<span class="currency-code">USD</span></div>
+                    <div class="payment-method">{{ receipt.payment_method|default:"Visa x-0992" }}</div>
+                    <div class="payment-amount">${{ receipt.amount|floatformat:2|intcomma }}<span class="currency-code">{{ receipt.country.currency_code|default:"USD" }}</span></div>
                 </div>
-                <div class="statement-info">This transaction will appear on your statement as PAYPAL *MICHAELPINA</div>
+                <div class="statement-info">This transaction will appear on your statement as {{ receipt.statement_descriptor|default:"PAYPAL *" }}{{ receipt.your_name }}</div>
             </div>
-            
             <!-- Shipped To Section -->
             <div class="detail-section">
                 <div class="section-header">Shipped to</div>
                 <div class="shipping-info">
-                    <div class="recipient-name">Michael Pina</div>
-                    <div class="address-line">313 strand st</div>
-                    <div class="address-line">Santa Monica, AZ 90405</div>
-                    <div class="address-line">United States</div>
+                    <div class="recipient-name">{{ receipt.your_name| }}</div>
+                    <div class="address-line">{{ receipt.address_line1|default:"313 strand St" }}</div>
+                    <div class="address-line">{{ receipt.address_line2|default:"Santa Monica, AZ 90405" }}</div>
+                    <div class="address-line">{{ receipt.country.name|default:"United States" }}</div>
                 </div>
             </div>
-            
             <!-- Purchase Details Section -->
             <div class="detail-section">
                 <div class="section-header">Purchase details</div>
                 <div class="purchase-item">
-                    <div class="purchase-label">Receipt number: 1860719633887668</div>
+                    <div class="purchase-label">Receipt number: {{ receipt.transaction_id }}</div>
                 </div>
                 <div class="purchase-item">
                     <div class="purchase-label">We'll send confirmation to:</div>
-                    <div class="purchase-value">mikeyapina@gmail.com</div>
+                    <div class="purchase-value"></div>
                 </div>
             </div>
-            
             <!-- Merchant Details Section -->
             <div class="detail-section">
                 <div class="section-header">Merchant details</div>
-                <div class="merchant-name">Michael Pina dba Michael Pina</div>
+                <div class="merchant-name">{{ receipt.your_name|default:receipt.your_name|default:receipt.sender_name }}</div>
             </div>
         </div>
-        
         <!-- Return Button -->
         <button class="return-button">Return to Merchant</button>
     </div>
