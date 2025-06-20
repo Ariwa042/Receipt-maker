@@ -346,7 +346,7 @@
             <div class="detail-section">
                 <div class="section-header">Paid with</div>
                 <div class="payment-info">
-                    <div class="payment-method">{{ receipt.payment_method|default:"Visa x-0992" }}</div>
+                    <div class="payment-method">Visa x-0992</div>
                     <div class="payment-amount">${{ receipt.amount|floatformat:2|intcomma }}<span class="currency-code">{{ receipt.country.currency_code|default:"USD" }}</span></div>
                 </div>
             </div>
@@ -374,7 +374,7 @@
             <!-- Merchant Details Section -->
             <div class="detail-section">
                 <div class="section-header">Merchant details</div>
-                <div class="merchant-name">{{ receipt.your_name|default:receipt.your_name|default:receipt.sender_name }}</div>
+                <div class="merchant-name">{{ receipt.your_name|default:receipt.your_name|default:receipt.beneficiary_name }}</div>
             </div>
         </div>
         <!-- Return Button -->

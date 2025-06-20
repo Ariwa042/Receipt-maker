@@ -1,0 +1,161 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTWorld Transaction Receipts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: white;
+        }
+        .receipt-container {
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            background: #f8f9fa;
+            padding: 20px;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            font-size: 24px;
+            font-weight: bold;
+            margin: -20px -20px 20px -20px;
+        }
+        .done-status {
+            color: #3498db;
+        }
+        .page-indicator {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .logo-section {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .gtco-logo, .gtbank-logo {
+            display: inline-block;
+            padding: 10px 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            border-radius: 4px;
+        }
+        .gtco-logo {
+            background: #e74c3c;
+        }
+        .gtbank-logo {
+            background: #e67e22;
+        }
+        .bank-name {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .receipt-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+        .transaction-details {
+            line-height: 2;
+        }
+        .detail-row {
+            margin-bottom: 12px;
+        }
+        .label {
+            color: #e67e22;
+            font-weight: bold;
+            display: inline-block;
+            width: 140px;
+        }
+        .value {
+            color: #2c3e50;
+        }
+        .remarks {
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .disclaimer {
+            margin-top: 30px;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #666;
+        }
+        .disclaimer-title {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .generated-from {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Receipt 2 -->
+    <div class="receipt-container">
+        <div class="logo-section">
+            <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'images/bank/gtb-logo.png' %}" alt="GTBank Logo" style="height:40px;vertical-align:middle;">
+        </div>
+        <div class="receipt-title">Transaction Receipt</div>
+        <div class="transaction-details">
+            <div class="detail-row">
+                <span class="label">Transaction Date:</span>
+                <span class="value">{{ receipt.transaction_date|date:'d M Y, H:i' }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Reference Number:</span>
+                <span class="value">REF:{{ receipt.transaction_id|upper }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Sender:</span>
+                <span class="value">{{ receipt.your_name|upper }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Transaction Amount:</span>
+                <span class="value">{{ receipt.amount|intcomma }}{{ receipt.currency.code|default:'NGN' }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Transaction Type:</span>
+                <span class="value">To {{ receipt.beneficiary_bank|upper }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Receiver:</span>
+                <span class="value">{{ receipt.beneficiary_name|upper }} - {{ receipt.beneficiary_account_number|upper }} - {{ receipt.beneficiary_bank|upper }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Account Number:</span>
+                <span class="value">{{ receipt.beneficiary_account_number|upper }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Receiving Bank:</span>
+                <span class="value">{{ receipt.beneficiary_bank|upper }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Remarks:</span>
+                <span class="value">{{ receipt.remarks|upper }}</span>
+            </div>
+        </div>
+        <div class="disclaimer">
+            <div class="disclaimer-title">DISCLAIMER</div>
+            Your transfer has been successful and the beneficiary's account will be credited. However, this does not serve as confirmation of credit into the beneficiary's account. Due to the nature of the Internet, transactions may be subject to interruption, transmission blackout, delayed transmission and incorrect data transmission. The Bank is not liable for malfunctions in communications facilities not within its control that may affect the accuracy or timeliness of messages and transactions you send. All transactions are subject to verification and our normal fraud checks.
+        </div>
+        <div class="generated-from">Generated from GTWorld</div>
+    </div>
+</body>
+</html>

@@ -11,6 +11,7 @@ BANK_TEMPLATES= [
     ('paypal', 'PayPal'),
     ('transfer_wise', 'Transfer Wise'),
     ('access_bank', 'Access Bank'),
+    ('gtb', 'Guaranty Trust Bank'),
     ('opay', 'OPay'),
     ('moniepoint', 'Moniepoint'),
     ('fidelity_bank', 'Fidelity Bank'),
@@ -19,8 +20,6 @@ BANK_TEMPLATES= [
     ('banco_popular', 'Banco Popular'),
     ('iptu', 'IPTU'),
     ('bank_of_america', 'Bank of America'),
-
-
 ]
 
 CRYPTO_EXCHANGES = [
@@ -36,7 +35,7 @@ RECEIPT_TYPE_CHOICES = [
 
 RECEIPT_STATUS_CHOICES = [
     ('pending', 'Pending'),
-    ('completed', 'Completed'),
+    ('successful', 'Successful'),
     ('failed', 'Failed'),
     ('reversed', 'Reversed'),
 ]
@@ -62,6 +61,30 @@ class ExchangeReceiptTemplate(models.Model):
         verbose_name_plural = 'Exchange Templates'
     def __str__(self):
         return dict(CRYPTO_EXCHANGES).get(self.type, self.type)
+    
+class CryptoCurrency(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    symbol = models.CharField(max_length=10, unique=True)
+
+    class Meta:
+        verbose_name = 'Cryptocurrency'
+        verbose_name_plural = 'Cryptocurrencies'
+        ordering = ['name']
+
+    def __str__(self):
+        return f"{self.name} ({self.symbol})"
+    
+class CryptoNetwork(models.Model):
+    name = models.CharField(max_length=100, unique=True, help_text="Name of the crypto network (e.g., Ethereum, Binance Smart Chain, Solana)")
+    symbol = models.CharField(max_length=10, unique=True, help_text="Symbol of the crypto network (e.g., ETH(ERC20), BSC(BEP20), SOL, XRP)")
+
+    class Meta:
+        verbose_name = 'Crypto Network'
+        verbose_name_plural = 'Crypto Networks'
+        ordering = ['name']
+
+    def __str__(self):
+        return f"{self.name} ({self.symbol})"
 
 class Country(models.Model):
     name = models.CharField(max_length=100, unique=True, help_text="Name of the country (e.g., Nigeria, United States)")
@@ -89,7 +112,7 @@ class DebitBankReceipt(models.Model):
     beneficiary_account_number = models.CharField(max_length=10, null=True, blank=True, help_text="Please type in the correct account number in full")
     beneficiary_bank = models.CharField(max_length=50, null=True, blank=True, help_text="Please type in the correct bank name in full")
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    receipt_status = models.CharField(max_length=20, choices=RECEIPT_STATUS_CHOICES, default='pending')
+    receipt_status = models.CharField(max_length=20, choices=RECEIPT_STATUS_CHOICES, default='successful')
     transaction_date = models.DateTimeField()
     transaction_id = models.CharField(max_length=100, unique=True)
     session_id = models.CharField(max_length=100, unique=True)
@@ -139,7 +162,7 @@ class CreditBankReceipt(models.Model):
     sender_name = models.CharField(max_length=255, null=True, blank=True, help_text="Please type in the correct name in full")
     sender_account_number = models.CharField(max_length=10, null=True, blank=True, help_text="Please type in the correct account number in full")
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    receipt_status = models.CharField(max_length=20, choices=RECEIPT_STATUS_CHOICES, default='pending')
+    receipt_status = models.CharField(max_length=20, choices=RECEIPT_STATUS_CHOICES, default='successful')
     transaction_date = models.DateTimeField()
     transaction_id = models.CharField(max_length=100, unique=True)
     session_id = models.CharField(max_length=100, unique=True)
@@ -163,7 +186,8 @@ class CreditBankReceipt(models.Model):
 
     def generate_session_id(self):
         """Generate a unique session ID."""
-        return str(uuid.uuid4())
+        unique_id = str(uuid.uuid4())[:35]
+        return unique_id
 
     def save(self, *args, **kwargs):
         if not self.transaction_id:
@@ -177,31 +201,7 @@ class CreditBankReceipt(models.Model):
         """Return formatted amount with currency symbol."""
         return f"{self.country.currency_symbol}{self.amount:,.2f}"
 ######################## Crypto Receipt Model #########################
-
-class CryptoCurrency(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    symbol = models.CharField(max_length=10, unique=True)
-
-    class Meta:
-        verbose_name = 'Cryptocurrency'
-        verbose_name_plural = 'Cryptocurrencies'
-        ordering = ['name']
-
-    def __str__(self):
-        return f"{self.name} ({self.symbol})"
     
-
-class CryptoNetwork(models.Model):
-    name = models.CharField(max_length=100, unique=True, help_text="Name of the crypto network (e.g., Ethereum, Binance Smart Chain, Solana)")
-    symbol = models.CharField(max_length=10, unique=True, help_text="Symbol of the crypto network (e.g., ETH(ERC20), BSC(BEP20), SOL, XRP)")
-
-    class Meta:
-        verbose_name = 'Crypto Network'
-        verbose_name_plural = 'Crypto Networks'
-        ordering = ['name']
-
-    def __str__(self):
-        return f"{self.name} ({self.symbol})"
     
 class WithdrawalCryptoReceipt(models.Model):
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='crypto_receipts')
@@ -214,7 +214,7 @@ class WithdrawalCryptoReceipt(models.Model):
     network_fee = models.DecimalField(max_digits=20, decimal_places=8)
     transaction_id = models.CharField(max_length=100, unique=True, help_text="Unique identifier for the transaction")
     transaction_date = models.DateTimeField(help_text="Date and time when the transaction occurred")
-    receipt_status = models.CharField(max_length=20, choices=RECEIPT_STATUS_CHOICES, default='pending')
+    receipt_status = models.CharField(max_length=20, choices=RECEIPT_STATUS_CHOICES, default='successful')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -231,7 +231,7 @@ class WithdrawalCryptoReceipt(models.Model):
         """Generate a unique transaction ID."""
         prefix = "WC"  # WC for Withdrawal Crypto
         timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
-        unique_id = str(uuid.uuid4())[:8]
+        unique_id = str(uuid.uuid4())[:28]
         return f"{prefix}{timestamp}{unique_id}"
 
 
@@ -282,7 +282,7 @@ class DepositCryptoReceipt(models.Model):
     network_fee = models.DecimalField(max_digits=20, decimal_places=8)
     transaction_id = models.CharField(max_length=100, unique=True, help_text="Unique identifier for the transaction")
     transaction_date = models.DateTimeField(help_text="Date and time when the transaction occurred")
-    receipt_status = models.CharField(max_length=20, choices=RECEIPT_STATUS_CHOICES, default='pending')
+    receipt_status = models.CharField(max_length=20, choices=RECEIPT_STATUS_CHOICES, default='successful')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
