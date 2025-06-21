@@ -7,11 +7,12 @@ from django.core.exceptions import ValidationError
 # Create your models here.
 BANK_TEMPLATES= [
     ('first_bank', 'First Bank of Nigeria'),
-    ('chase_bank', 'Chase Bank'),
     ('paypal', 'PayPal'),
     ('transfer_wise', 'Transfer Wise'),
     ('access_bank', 'Access Bank'),
     ('gtb', 'Guaranty Trust Bank'),
+    ('zenith_bank', 'Zenith Bank'),
+    ('kuda', 'Kuda Bank'),
     ('opay', 'OPay'),
     ('moniepoint', 'Moniepoint'),
     ('fidelity_bank', 'Fidelity Bank'),

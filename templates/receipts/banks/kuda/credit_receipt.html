@@ -1,0 +1,349 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuda Transaction Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background-color: white;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .receipt-container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 20px;
+            background-color: #fff;
+        }
+        
+        .kuda-logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #6b46c1;
+            text-align: center;
+        }
+        
+        .kuda-logo img {
+            height: 48px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        .kuda-logo span {
+            font-weight: bold;
+            color: #6c47ff;
+            font-size: 1.2em;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+        
+        .header-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .amount-section {
+            text-align: center;
+            padding: 32px 20px;
+            background-color: #fff;
+        }
+        
+        .amount-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .amount-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+        
+        .transaction-details {
+            padding: 0 20px 24px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 16px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .label {
+            font-size: 14px;
+            color: #9ca3af;
+            font-weight: 500;
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+        
+        .value {
+            font-size: 14px;
+            color: #1f2937;
+            font-weight: 600;
+            text-align: right;
+            flex: 1;
+            word-break: break-word;
+        }
+        
+        .sub-info {
+            font-size: 13px;
+            color: #9ca3af;
+            font-weight: 400;
+            margin-top: 2px;
+            line-height: 1.3;
+        }
+        
+        .promo-section {
+            margin: 16px 20px 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, #ede9fe, #f3f0ff);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .promo-icon {
+            width: 40px;
+            height: 40px;
+            background: #6b46c1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        .promo-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b46c1;
+            line-height: 1.4;
+        }
+        
+        .footer {
+            padding: 20px;
+            text-align: center;
+            background-color: #f9fafb;
+        }
+        
+        .footer-text {
+            font-size: 10px;
+            color: #9ca3af;
+            line-height: 1.5;
+            margin: 0;
+            font-weight: 400;
+        }
+        
+        /* Specific mobile optimizations */
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            
+            .header {
+                padding: 20px 16px;
+            }
+            
+            .kuda-logo {
+                font-size: 22px;
+            }
+            
+            .logo-k {
+                width: 28px;
+                height: 28px;
+                font-size: 16px;
+            }
+            
+            .header-title {
+                font-size: 15px;
+            }
+            
+            .amount-section {
+                padding: 28px 16px;
+            }
+            
+            .amount-value {
+                font-size: 28px;
+            }
+            
+            .transaction-details {
+                padding: 0 16px 20px;
+            }
+            
+            .detail-row {
+                padding: 14px 0;
+            }
+            
+            .label {
+                min-width: 100px;
+                font-size: 13px;
+            }
+            
+            .value {
+                font-size: 11px;
+            }
+            
+            .sub-info {
+                font-size: 12px;
+            }
+            
+            .promo-section {
+                margin: 12px 16px 20px;
+                padding: 14px;
+            }
+            
+            .promo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 15px;
+            }
+            
+            .promo-text {
+                font-size: 12px;
+            }
+            
+            .footer {
+                padding: 16px;
+            }
+            
+            .footer-text {
+                font-size: 9px;
+            }
+        }
+        
+        /* Ultra small screens */
+        @media (max-width: 360px) {
+            .detail-row {
+                flex-direction: column;
+                gap: 4px;
+                align-items: flex-start;
+            }
+            
+            .value {
+                text-align: left;
+                width: 100%;
+            }
+            
+            .label {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <div class="header">
+            <div class="kuda-logo">
+                <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'images/bank/kuda-logo.png' %}" alt="Kuda Bank Logo" style="height:48px;display:inline-block;vertical-align:middle;">
+            </div>
+            <div class="header-title">Transaction Details</div>
+        </div>
+        
+        <div class="amount-section">
+            <div class="amount-label">Transaction Amount</div>
+            <div class="amount-value">₦{{ receipt.amount|floatformat:2|intcomma }}</div>
+        </div>
+        
+        <div class="transaction-details">
+            <div class="detail-row">
+                <span class="label">Beneficiary Details</span>
+                <div class="value">
+                    {{ receipt.your_name }}
+                    <div class="sub-info">Kuda | {{ receipt.your_account_number }}</div>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Sender Details</span>
+                <div class="value">
+                    {{ receipt.sender_name }}
+                    <div class="sub-info">{{ receipt.sender_bank }} | {{ receipt.sender_account_number }}</div>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Paid On</span>
+                <div class="value">
+                    {{ receipt.transaction_date|date:'M d, Y' }}
+                    <div class="sub-info">{{ receipt.transaction_date|date:'g:i A' }}</div>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Fees</span>
+                <span class="value">₦10.00</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Description</span>
+                <span class="value">{{ receipt.remark }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Transaction Reference</span>
+                <span class="value">{{ receipt.transaction_id }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Payment Type</span>
+                <span class="value">Transfer</span>
+            </div>
+        </div>
+        
+        <div class="promo-section">
+            <div class="promo-icon">K</div>
+            <div class="promo-text">
+                Not on Kuda? Tap here to download the money app for Africans
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p class="footer-text">
+                © 2025 Kuda Technologies Ltd (Company No. 11472232). All rights reserved.<br>
+                If you would like to find out more about which Kuda entity you receive services from, please reach out to us via the in-app chat in the Kuda app.<br><br>
+                Nigerian banking services offered by Kuda Microfinance Bank (RC796975) with registered address at 151 - Herbert Macaulay Way, Yaba, Lagos, Nigeria. Kuda Microfinance Bank is licensed by the Central Bank of Nigeria. Deposits are insured by the Nigerian Deposit Insurance Corporation (NDIC).
+            </p>
+        </div>
+    </div>
+</body>
+</html>

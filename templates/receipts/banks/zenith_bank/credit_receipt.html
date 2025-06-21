@@ -206,7 +206,7 @@
         <div class="header">
             <div class="receipt-title">Transaction Receipt</div>
             <div class="zenith-logo">
-                <img src="{% static 'images/bank/zenith_logo.png' %}" alt="Zenith Bank Logo">
+                <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'images/bank/zenith_logo.png' %}" alt="Zenith Bank Logo">
             </div>
         </div>
         
