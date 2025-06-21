@@ -1,0 +1,275 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith Bank Transaction Receipt</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .receipt-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #e0e0e0;
+            position: relative;
+        }
+        
+        .receipt-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .zenith-logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            position: absolute;
+            right: 20px;
+            text-align: center;
+        }
+        
+        .zenith-logo img {
+            height: 48px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        .zenith-logo span {
+            font-weight: bold;
+            color: #e30613;
+            font-size: 1.2em;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+        
+        .date-header {
+            background-color: #e63946;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .transaction-details {
+            padding: 0;
+        }
+        
+        .detail-row {
+            display: flex;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            align-items: flex-start;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .label {
+            font-weight: bold;
+            color: #333;
+            min-width: 140px;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+        
+        .value {
+            color: #333;
+            flex: 1;
+            font-size: 14px;
+            word-break: break-word;
+        }
+        
+        .disclaimer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #666;
+        }
+        
+        .disclaimer-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .contact-info {
+            background-color: #e63946;
+            color: white;
+            padding: 15px 20px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                position: relative;
+                padding: 25px 20px;
+            }
+            
+            .zenith-logo {
+                position: absolute;
+                right: 20px;
+            }
+            
+            .receipt-title {
+                font-size: 14px;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+                gap: 5px;
+                padding: 12px 15px;
+            }
+            
+            .label {
+                min-width: auto;
+                font-weight: bold;
+            }
+            
+            .value {
+                padding-left: 10px;
+            }
+            
+            .disclaimer,
+            .contact-info {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .receipt-title {
+                font-size: 14px;
+            }
+            
+            .zenith-logo {
+                font-size: 20px;
+            }
+            
+            .logo-z {
+                width: 25px;
+                height: 25px;
+                font-size: 16px;
+            }
+            
+            .date-header {
+                font-size: 14px;
+                padding: 12px;
+            }
+            
+            .detail-row {
+                padding: 10px 12px;
+            }
+            
+            .label,
+            .value {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <div class="header">
+            <div class="receipt-title">Transaction Receipt</div>
+            <div class="zenith-logo">
+                <img src="{% static 'images/bank/zenith_logo.png' %}" alt="Zenith Bank Logo">
+            </div>
+        </div>
+        
+        <div class="date-header">
+            {{ receipt.transaction_date|date:'l, F d, Y' }}
+        </div>
+        
+        <div class="transaction-details">
+            <div class="detail-row">
+                <span class="label">Transaction Type:</span>
+                <span class="value">Bank Transfer</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Transaction Date:</span>
+                <span class="value">{{ receipt.transaction_date|date:'d-M-Y h:i:s A' }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Debit Account:</span>
+                <span class="value">{{ receipt.your_account_number|slice:':4' }}***{{ receipt.your_account_number|slice:'-3:' }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Credit Account:</span>
+                <span class="value">{{ receipt.beneficiary_account_number }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Beneficiary:</span>
+                <span class="value">{{ receipt.beneficiary_name }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Bank:</span>
+                <span class="value">{{ receipt.beneficiary_bank|upper|default:"ZENITH BANK" }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Narration:</span>
+                <span class="value">{{ receipt.remarks }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Status:</span>
+                <span class="value">Success</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Amount:</span>
+                <span class="value">₦{{ receipt.amount|floatformat:2|intcomma }}</span>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <div class="disclaimer-title">DISCLAIMER:</div>
+            Your transaction has been successfully processed. Note, however, that completion of any transfer may be affected by other factors including but not limited to transmission errors, incomplete information, fluctuations on the network/internet, interruptions, glitch, delayed information or other matters beyond the Bank's control which may impact on the transaction and for which the Bank will not be liable. All transactions are subject to Zenith Bank confirmation and fraud proof verification.
+        </div>
+        
+        <div class="contact-info">
+            For any other assistance, kindly contact us on<br>
+            customerdirect@zenithbank.com and 234-1-2787000
+        </div>
+    </div>
+</body>
+</html>
