@@ -1,83 +1,261 @@
 {% load static %}
-
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank Debit Receipt - ReceiptGen</title>
+    <title>FirstBank Transaction Receipt</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: clamp(5px, 2vw, 20px);
+            background-color: white;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><text x="50%" y="50%" font-family="Arial" font-size="120" font-weight="bold" fill="%23e0e0e0" text-anchor="middle" transform="rotate(-45 400 300)">FIRSTBANK</text></svg>');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: clamp(60%, 10vw + 50%, 80%);
+            min-height: 100vh;
+        }
+        
+        .receipt-container {
+            max-width: min(600px, 95vw);
+            margin: 0 auto;
+            background: white;
+            padding: clamp(15px, 4vw, 30px);
+            position: relative;
+            border-radius: 8px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: clamp(20px, 5vw, 30px);
+        }
+        
+        .logo {
+            width: clamp(60px, 15vw, 80px);
+            height: clamp(60px, 15vw, 80px);
+            margin: 0 auto clamp(10px, 3vw, 15px) auto;
+            position: relative;
+        }
+        
+        .bank-name {
+            font-size: clamp(24px, 8vw, 36px);
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 5px;
+            line-height: 1.2;
+            font-style: italic;
+        }
+        
+        .since {
+            font-size: clamp(12px, 3vw, 14px);
+            color: #1e3a8a;
+            font-style: italic;
+        }
+        
+        .receipt-title {
+            font-size: clamp(18px, 5vw, 20px);
+            font-weight: bold;
+            color: #1e3a8a;
+            text-align: center;
+            margin: clamp(20px, 5vw, 30px) 0;
+            padding-bottom: clamp(8px, 2vw, 10px);
+            border-bottom: 2px solid #d4a017;
+        }
+        
+        .transaction-details {
+            line-height: 1.6;
+            font-size: clamp(14px, 3.5vw, 16px);
+        }
+        
+        .detail-row {
+            margin-bottom: clamp(12px, 3vw, 15px);
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: clamp(8px, 2vw, 12px);
+        }
+        
+        .label {
+            color: #1e3a8a;
+            font-weight: bold;
+            font-size: clamp(13px, 3.2vw, 15px);
+            min-width: clamp(120px, 35vw, 220px);
+            flex-shrink: 0;
+        }
+        
+        .value {
+            color: #000;
+            word-break: break-word;
+            font-size: clamp(14px, 3.5vw, 16px);
+            flex: 1;
+        }
+        
+        .generated-from {
+            text-align: center;
+            margin-top: clamp(30px, 6vw, 40px);
+            font-size: clamp(12px, 3vw, 14px);
+            color: #1e3a8a;
+            font-weight: bold;
+            padding-top: clamp(15px, 4vw, 20px);
+            border-top: 2px solid #d4a017;
+        }
+        
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: clamp(60px, 20vw, 120px);
+            font-weight: bold;
+            color: rgba(224, 224, 224, 0.3);
+            z-index: 0;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Large screens (desktop) - increased line height */
+        @media (min-width: 769px) {
+            .label {
+                min-width: 220px;
+            }
+            
+            .transaction-details {
+                line-height: 2.5;
+            }
+        }
+        
+        /* Very small screens */
+        @media (max-width: 320px) {
+            .receipt-container {
+                margin: 0;
+                border-radius: 0;
+                min-height: 100vh;
+            }
+            
+            .bank-name {
+                font-size: 20px;
+            }
+            
+            .logo {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .logo::after {
+                font-size: 20px;
+            }
+        }
+        
+        /* Print styles */
         @media print {
-            .receipt-actions { display: none !important; }
+            body {
+                background: white;
+                background-image: none;
+                padding: 0;
+            }
+            
+            .receipt-container {
+                box-shadow: none;
+                border-radius: 0;
+                max-width: 100%;
+                padding: 20px;
+            }
+            
+            .watermark {
+                color: rgba(224, 224, 224, 0.1);
+            }
+        }
+        
+        /* High DPI screens */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .logo::before {
+                border-radius: 1px;
+            }
+        }
+        
+        /* Landscape orientation adjustments */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .header {
+                margin-bottom: 15px;
+            }
+            
+            .receipt-title {
+                margin: 15px 0;
+            }
+            
+            .detail-row {
+                margin-bottom: 8px;
+            }
+            
+            .generated-from {
+                margin-top: 20px;
+                padding-top: 10px;
+            }
         }
     </style>
 </head>
 <body>
-<div class="receipt-container"style="font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; border: 2px solid #003b65;">
-    <!-- First Bank Header -->
-    <div class="bank-header" style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #003b65; padding-bottom: 15px;">
-        <img src="{% static 'images/firstbank-logo.png' %}" alt="First Bank Logo" style="height: 60px;">
-        <h2 style="color: #003b65; margin: 10px 0;">First Bank of Nigeria</h2>
-        <div style="color: #666;">Debit Transaction Receipt</div>
-    </div>
-
-    <!-- Transaction Details -->
-    <div class="transaction-details" style="margin: 20px 0; padding: 15px; background-color: #f9f9f9;">
-        <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Transaction Date:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.date|date:"d M Y H:i:s" }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Transaction Reference:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">FBN{{ receipt.id|stringformat:"010d" }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">From Account:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.sender_account_number }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Account Name:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.sender_name }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">To Account:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.beneficiary_account_number }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Beneficiary Name:</td>                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.beneficiary_name }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Beneficiary Bank:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.beneficiary_bank.type }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Amount:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; font-weight: bold; color: #cc0000;">
-                    ₦{{ receipt.amount|floatformat:2 }}
-                </td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Narration:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ receipt.description }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #666;">Status:</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: #008000;">SUCCESSFUL</td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- Footer -->
-    <div class="receipt-footer" style="margin-top: 30px; text-align: center; color: #666; font-size: 0.9em;">
-        <p>Thank you for banking with First Bank of Nigeria.</p>
-        <p style="font-size: 0.8em; margin-top: 10px;">
-            For complaints and enquiries, please contact us at:<br>
-            FirstContact: 01-4485500 | 0708-062-5000<br>
-            Email: firstcontact@firstbanknigeria.com
-        </p>
-        <div style="margin-top: 20px; font-size: 0.8em; color: #999;">
-            This is a computer-generated document. No signature is required.        </div>
+    <div class="receipt-container">
+        <div class="watermark">FIRSTBANK</div>
+        <div class="content">
+            <div class="header">
+                <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'images/bank/first_bank_logo.png' %}" alt="FirstBank Logo" class="logo" style="width:80px;height:80px;display:block;margin:0 auto 15px auto;">
+                <div class="bank-name">FirstBank</div>
+                <div class="since">Since 1894</div>
+            </div>
+            <div class="receipt-title">Transaction Receipt</div>
+            <div class="transaction-details">
+                <div class="detail-row">
+                    <span class="label">Transaction Date:</span>
+                    <span class="value">{{ receipt.transaction_date|date:'D M d H:i:s T Y' }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Transaction Type:</span>
+                    <span class="value">{{ receipt.transaction_type|default: "NIP Transfer" }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Amount:</span>
+                    <span class="value">{{ receipt.amount|floatformat:2|intcomma }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Source Account:</span>
+                    <span class="value">{{ receipt.your_account_number|slice:':4' }}***{{ receipt.your_account_number|slice:'-3:' }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Source Account Name:</span>
+                    <span class="value">{{ receipt.your_account_name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Beneficiary Account Number:</span>
+                    <span class="value">{{ receipt.beneficiary_account_number }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Beneficiary Name:</span>
+                    <span class="value">{{ receipt.beneficiary_name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Bank:</span>
+                    <span class="value">{{ receipt.beneficiary_bank }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Narration:</span>
+                    <span class="value">{{ receipt.remarks }}</span>
+                </div>
+            </div>
+            <div class="generated-from">Generated from FirstMobile</div>
+        </div>
     </div>
 </body>
 </html>

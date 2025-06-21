@@ -32,7 +32,7 @@ def generate_receipt_pdf(request, template_name, context):
     with sync_playwright() as p:
         browser = p.chromium.launch()
         # Create page with mobile viewport
-        page = browser.new_page(viewport={'width': 390, 'height': 844})  # iPhone 12 Pro dimensions
+        page = browser.new_page(viewport={'width': 430, 'height': 932})  # iPhone 14 Pro Max dimensions
         
         # Render the template to HTML
         html_content = render(request, template_name, context).content.decode()
@@ -46,7 +46,7 @@ def generate_receipt_pdf(request, template_name, context):
             page.wait_for_timeout(1000)
             
             # Generate PDF with mobile width
-            page.pdf(path=tmp.name, width="390px", format='A4')
+            page.pdf(path=tmp.name, width="430px", format='A4')
             tmp_path = tmp.name
         
         browser.close()
@@ -58,7 +58,7 @@ def generate_receipt_image(request, template_name, context):
     with sync_playwright() as p:
         browser = p.chromium.launch()
         # Create page with mobile viewport
-        page = browser.new_page(viewport={'width': 390, 'height': 844})  # iPhone 12 Pro dimensions
+        page = browser.new_page(viewport={'width': 430, 'height': 932})  # iPhone 14 Pro Max dimensions
         
         # Set mobile user agent
         page.set_extra_http_headers({
