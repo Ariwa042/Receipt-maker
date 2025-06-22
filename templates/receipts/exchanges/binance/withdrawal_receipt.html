@@ -1,50 +1,375 @@
-{% extends 'receipts/base_receipt.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Withdrawal Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-{% block receipt_content %}
-<div class="receipt-container crypto-receipt withdrawal binance">
-    <div class="receipt-header">
-        <div class="logo">
-            <img src="{% static 'images/exchanges/binance/logo.png' %}" alt="Binance Logo">
+        body {
+            font-family: Arial, sans-serif;
+            background: #181a20;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 100%;
+            background: #181a20;
+            padding: 24px 20px;
+            min-height: 100vh;
+        }
+
+        .amount-section {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-top: 20px;
+        }
+
+        .amount-label {
+            color: #848e9c;
+            font-size: 16px;
+            font-weight: 400;
+            margin-bottom: 12px;
+        }
+
+        .amount-value {
+            font-size: 56px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .amount-currency {
+            font-size: 28px;
+            color: #848e9c;
+            font-weight: 400;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .status-icon {
+            width: 16px;
+            height: 16px;
+            background: #0ecb81;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .status-icon::after {
+            content: '✓';
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .status-text {
+            color: #0ecb81;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .description {
+            text-align: center;
+            color: #848e9c;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            padding: 0 10px;
+        }
+
+        .warning-link {
+            text-align: center;
+            color: #fcd535;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 400;
+            margin-bottom: 40px;
+            display: block;
+        }
+
+        .details-section {
+            margin-top: 40px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+            min-height: 20px;
+        }
+
+        .detail-label {
+            color: #848e9c;
+            font-size: 14px;
+            font-weight: 400;
+            flex-shrink: 0;
+        }
+
+        .detail-value {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-icon {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+            background: #848e9c;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z'/%3E%3C/svg%3E") no-repeat center;
+            mask-size: contain;
+        }
+
+        .copy-icon:hover {
+            opacity: 1;
+        }
+
+        .one-step-section {
+            background: #2b3139;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 32px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .one-step-section:hover {
+            background: #343a46;
+        }
+
+        .shield-icon {
+            width: 24px;
+            height: 24px;
+            background: #fcd535;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 12px;
+        }
+
+        .one-step-text {
+            flex: 1;
+            color: #ffffff;
+            font-size: 14px;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .arrow-right {
+            color: #848e9c;
+            font-size: 16px;
+            font-weight: 300;
+        }
+
+        .help-section {
+            text-align: center;
+            margin-top: 40px;
+            padding-bottom: 40px;
+        }
+
+        .help-link {
+            color: #fcd535;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .address-text, .txid-text {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        /* Spacing adjustments to match original */
+        .confirmations-row {
+            margin-bottom: 28px;
+        }
+
+        .network-row {
+            margin-bottom: 28px;
+        }
+
+        .withdrawal-wallet-row {
+            margin-bottom: 28px;
+        }
+
+        .address-row {
+            margin-bottom: 28px;
+        }
+
+        .txid-row {
+            margin-bottom: 28px;
+        }
+
+        .network-fee-row {
+            margin-bottom: 28px;
+        }
+
+        .date-row {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="amount-section">
+            <div class="amount-label">Amount</div>
+            <div class="amount-value">-{{ receipt.amount }} <span class="amount-currency">{{ receipt.currency|upper }}</span></div>
+            <div class="status">
+                <div class="status-icon"></div>
+                <span class="status-text">{{ receipt.status }}</span>
+            </div>
         </div>
-        <div class="receipt-title">
-            <h1>Binance Withdrawal Receipt</h1>
-            <div class="receipt-id">Transaction ID: {{ receipt.transaction_id }}</div>
+
+        <div class="description">
+            Crypto transferred out of Binance. Please contact the recipient<br>platform for your transaction receipt.
+        </div>
+        
+        <a href="#" class="warning-link">Why hasn't my withdrawal arrived?</a>
+
+        <div class="details-section">
+            <div class="detail-row confirmations-row">
+                <span class="detail-label">Confirmations</span>
+                <span class="detail-value">28 / 1</span>
+            </div>
+            
+            <div class="detail-row network-row">
+                <span class="detail-label">Network</span>
+                <span class="detail-value">{{ receipt.network }}</span>
+            </div>
+            
+            <div class="detail-row withdrawal-wallet-row">
+                <span class="detail-label">Withdrawal Wallet</span>
+                <span class="detail-value">Spot Wallet</span>
+            </div>
+            
+            <div class="detail-row address-row">
+                <span class="detail-label">Address</span>
+                <div class="detail-value">
+                    <span class="address-text">{{ receipt.withdrawal_address }}<br>kPsPuxgF9</span>
+                    <div class="copy-icon" onclick="copyToClipboard('TTxsuGjAb784zB4rQYAsVDobNkPsPuxgF9')"></div>
+                </div>
+            </div>
+            
+            <div class="detail-row txid-row">
+                <span class="detail-label">Txid</span>
+                <div class="detail-value">
+                    <span class="txid-text">{{receipt.transaction_id }}</span>
+                    <div class="copy-icon" onclick="copyToClipboard('{{receipt.transaction_id }}')"></div>
+                </div>
+            </div>
+            
+            <div class="detail-row network-fee-row">
+                <span class="detail-label">Network fee</span>
+                <span class="detail-value">{{ receipt.network_fee }} {{ receipt.currency|upper }}</span>
+            </div>
+            
+            <div class="detail-row date-row">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">{{ receipt.transaction_date }}</span>
+            </div>
+        </div>
+
+        <div class="one-step-section">
+            <div class="shield-icon">🛡</div>
+            <div class="one-step-text">
+                Enable one-step withdrawal to withdraw to<br>whitelisted addresses easily.
+            </div>
+            <div class="arrow-right">→</div>
+        </div>
+
+        <div class="help-section">
+            <a href="#" class="help-link">Need help? Check FAQs</a>
         </div>
     </div>
 
-    <div class="transaction-details">
-        <div class="detail-row">
-            <div class="label">Date:</div>
-            <div class="value">{{ receipt.transaction_date }}</div>
-        </div>
-        <div class="detail-row">
-            <div class="label">Amount:</div>
-            <div class="value">{{ receipt.amount }} {{ receipt.cryptocurrency }}</div>
-        </div>
-        <div class="detail-row">
-            <div class="label">Network:</div>
-            <div class="value">{{ receipt.network }}</div>
-        </div>
-        <div class="detail-row">
-            <div class="label">To Address:</div>
-            <div class="value">{{ receipt.wallet_address }}</div>
-        </div>
-    </div>
+    <script>
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showCopyNotification();
+                });
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCopyNotification();
+            }
+        }
 
-    {% if receipt.description %}
-    <div class="additional-info">
-        <div class="detail-row">
-            <div class="label">Description:</div>
-            <div class="value">{{ receipt.description }}</div>
-        </div>
-    </div>
-    {% endif %}
+        function showCopyNotification() {
+            const notification = document.createElement('div');
+            notification.textContent = 'Copied!';
+            notification.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(14, 203, 129, 0.9);
+                color: white;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-size: 14px;
+                z-index: 1000;
+                animation: fadeInOut 1.5s ease-out;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 1500);
+        }
 
-    <div class="footer">
-        <div class="exchange-info">
-            <div class="timestamp">Generated on: {{ receipt.created_at|date:"F j, Y H:i" }}</div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+        // Add fade animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+                20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

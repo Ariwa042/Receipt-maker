@@ -117,94 +117,99 @@
         }
     </style>
 </head>
-<body class="bg-light">
-    <div class="container py-5">
+<body class="bg-light">    <div class="container py-5">
         <h1 class="text-center mb-4">Create Crypto Withdrawal Receipt</h1>
         <div class="form-container">
-            <form method="post" class="needs-validation" novalidate>                {% csrf_token %}
-                <div class="form-section mb-4">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+
+                <!-- Display non-field errors -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="form-section">
                     <h3 class="section-title">Exchange Details</h3>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                {{ form.exchange.label_tag }}
-                {{ form.exchange }}
-                {% if form.exchange.errors %}
-                <div class="invalid-feedback">{{ form.exchange.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="col-md-6 mb-3">
-                {{ form.wallet_address.label_tag }}
-                {{ form.wallet_address }}
-                {% if form.wallet_address.errors %}
-                <div class="invalid-feedback">{{ form.wallet_address.errors }}</div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            {{ form.exchange.label_tag }}
+                            {{ form.exchange }}
+                            {% if form.exchange.errors %}
+                            <div class="invalid-feedback">{{ form.exchange.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.withdrawal_address.label_tag }}
+                            {{ form.withdrawal_address }}
+                            {% if form.withdrawal_address.errors %}
+                            <div class="invalid-feedback">{{ form.withdrawal_address.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
 
-    <div class="form-section mb-4">
-        <h4>Crypto Details</h4>
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                {{ form.amount.label_tag }}
-                {{ form.amount }}
-                {% if form.amount.errors %}
-                <div class="invalid-feedback">{{ form.amount.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="col-md-4 mb-3">
-                {{ form.cryptocurrency.label_tag }}
-                {{ form.cryptocurrency }}
-                {% if form.cryptocurrency.errors %}
-                <div class="invalid-feedback">{{ form.cryptocurrency.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="col-md-4 mb-3">
-                {{ form.network.label_tag }}
-                {{ form.network }}
-                {% if form.network.errors %}
-                <div class="invalid-feedback">{{ form.network.errors }}</div>
-                {% endif %}
-            </div>
-        </div>
-    </div>    <div class="form-section mb-4">
-        <h3 class="section-title">Additional Information</h3>
-        <div class="row">
-            <div class="col-12 mb-3">
-                {{ form.description.label_tag }}
-                {{ form.description }}
-                {% if form.description.errors %}
-                <div class="invalid-feedback">{{ form.description.errors }}</div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+                <div class="form-section">
+                    <h3 class="section-title">Crypto Details</h3>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            {{ form.amount.label_tag }}
+                            {{ form.amount }}
+                            {% if form.amount.errors %}
+                            <div class="invalid-feedback">{{ form.amount.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.amount_in_usd.label_tag }}
+                            {{ form.amount_in_usd }}
+                            {% if form.amount_in_usd.errors %}
+                            <div class="invalid-feedback">{{ form.amount_in_usd.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.currency.label_tag }}
+                            {{ form.currency }}
+                            {% if form.currency.errors %}
+                            <div class="invalid-feedback">{{ form.currency.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.network.label_tag }}
+                            {{ form.network }}
+                            {% if form.network.errors %}
+                            <div class="invalid-feedback">{{ form.network.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.network_fee.label_tag }}
+                            {{ form.network_fee }}
+                            {% if form.network_fee.errors %}
+                            <div class="invalid-feedback">{{ form.network_fee.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
 
-    <div class="form-section mb-4">
-        <h3 class="section-title">Transaction Details</h3>
-        <div class="row">
-            <div class="col-12 mb-3">
-                {{ form.transaction_id.label_tag }}
-                {{ form.transaction_id }}
-                {% if form.transaction_id.errors %}
-                <div class="invalid-feedback">{{ form.transaction_id.errors }}</div>
-                {% endif %}
-            </div>            <div class="col-12 mb-3">
-                {{ form.transaction_date.label_tag }}
-                {{ form.transaction_date }}
-                {% if form.transaction_date.errors %}
-                <div class="invalid-feedback">{{ form.transaction_date.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="col-12 mb-3">
-                {{ form.receipt_status.label_tag }}
-                {{ form.receipt_status }}
-                {% if form.receipt_status.errors %}
-                <div class="invalid-feedback">{{ form.receipt_status.errors }}</div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+                <div class="form-section">
+                    <h3 class="section-title">Transaction Details</h3>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            {{ form.transaction_date.label_tag }}
+                            {{ form.transaction_date }}
+                            {% if form.transaction_date.errors %}
+                            <div class="invalid-feedback">{{ form.transaction_date.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.receipt_status.label_tag }}
+                            {{ form.receipt_status }}
+                            {% if form.receipt_status.errors %}
+                            <div class="invalid-feedback">{{ form.receipt_status.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
 
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                     <input type="hidden" name="format" id="format" value="pdf">

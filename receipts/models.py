@@ -223,9 +223,9 @@ class WithdrawalCryptoReceipt(models.Model):
         verbose_name = 'Crypto Receipt'
         verbose_name_plural = 'Crypto Receipts'
         ordering = ['-created_at']
-
+        
     def __str__(self):
-        return f"{self.receipt_type} - {self.amount} {self.currency.symbol} - {self.transaction_id}"
+        return f"Withdrawal - {self.amount} {self.currency.symbol} - {self.transaction_id}"
 
 
     def generate_transaction_id(self):
@@ -251,14 +251,18 @@ class WithdrawalCryptoReceipt(models.Model):
     def formatted_usd_amount(self):
         """Return formatted USD amount."""
         return f"${self.amount_in_usd:,.2f}"
-
+    
     def clean(self):
         """Validate the model fields."""
         if not self.withdrawal_address:
             raise ValidationError({'withdrawal_address': 'Withdrawal address is required'})
-        if self.amount <= 0:
+        if self.amount is None:
+            raise ValidationError({'amount': 'Amount is required'})
+        elif self.amount <= 0:
             raise ValidationError({'amount': 'Amount must be greater than zero'})
-        if self.amount_in_usd <= 0:
+        if self.amount_in_usd is None:
+            raise ValidationError({'amount_in_usd': 'USD amount is required'})
+        elif self.amount_in_usd <= 0:
             raise ValidationError({'amount_in_usd': 'USD amount must be greater than zero'})
 
     def validate_unique(self, *args, **kwargs):
@@ -286,14 +290,14 @@ class DepositCryptoReceipt(models.Model):
     receipt_status = models.CharField(max_length=20, choices=RECEIPT_STATUS_CHOICES, default='successful')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     class Meta:
         verbose_name = 'Crypto Deposit Receipt'
         verbose_name_plural = 'Crypto Deposit Receipts'
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"{self.receipt_type} - {self.amount} {self.currency.symbol} - {self.transaction_id}"
+        return f"Deposit - {self.amount} {self.currency.symbol} - {self.transaction_id}"
     
     def generate_transaction_id(self):
         """Generate a unique transaction ID."""
@@ -301,23 +305,31 @@ class DepositCryptoReceipt(models.Model):
         timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
         unique_id = str(uuid.uuid4())[:8]
         return f"{prefix}{timestamp}{unique_id}"
+    
     def save(self, *args, **kwargs):
         if not self.transaction_id:
             self.transaction_id = self.generate_transaction_id()
         super().save(*args, **kwargs)
+    
     @property
     def formatted_crypto_amount(self):
         """Return formatted cryptocurrency amount with symbol."""
         return f"{self.amount:.8f} {self.currency.symbol}"
+    
     @property
     def formatted_usd_amount(self):
         """Return formatted USD amount."""
         return f"${self.amount_in_usd:,.2f}"
+    
     def clean(self):
         """Validate the model fields."""
         if not self.deposit_address:
             raise ValidationError({'deposit_address': 'Deposit address is required'})
-        if self.amount <= 0:
+        if self.amount is None:
+            raise ValidationError({'amount': 'Amount is required'})
+        elif self.amount <= 0:
             raise ValidationError({'amount': 'Amount must be greater than zero'})
-        if self.amount_in_usd <= 0:
+        if self.amount_in_usd is None:
+            raise ValidationError({'amount_in_usd': 'USD amount is required'})
+        elif self.amount_in_usd <= 0:
             raise ValidationError({'amount_in_usd': 'USD amount must be greater than zero'})

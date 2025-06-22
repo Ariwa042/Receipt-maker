@@ -64,14 +64,19 @@ def generate_receipt_image(request, template_name, context):
         page.set_extra_http_headers({
             'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1'
         })
-        
-        # Render the template to HTML
+          # Render the template to HTML
         html_content = render(request, template_name, context).content.decode()
         page.set_content(html_content)
         
-        # Wait for images to load
+        # Wait for page to load completely
         page.wait_for_load_state('networkidle')
-        page.wait_for_selector('img')
+        
+        # Wait for images to load if they exist (with timeout)
+        try:
+            page.wait_for_selector('img', timeout=5000)  # 5 second timeout
+        except:
+            # No images found, continue without waiting
+            pass
         
         # Wait for any lazy-loaded content and animations
         page.wait_for_timeout(2000)
