@@ -247,7 +247,7 @@
         </div>
         
         <div class="receipt-card">            
-            <div class="credit-label">{{ receipt.transaction_type|default:"CREDIT"|upper }}</div>
+            <div class="credit-label">CREDIT</div>
             
             <div class="amount-section">
                 <div class="amount">{{ receipt.currency_symbol|default:"₦" }}{{ receipt.amount|floatformat:2|default:"0.00" }}</div>
@@ -259,7 +259,7 @@
                 <div class="detail-item">
                     <div class="detail-label">Transaction Type</div>
                     <div class="detail-value">
-                        <span class="transfer-badge">{{ receipt.transaction_type|default:"Transfer" }}</span>
+                        <span class="transfer-badge">Transfer</span>
                     </div>
                 </div>
 
