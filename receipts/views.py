@@ -36,9 +36,22 @@ def _get_browser():
     global _playwright, _browser
     with _lock:
         if _browser is None or _playwright is None:
-            # Initialize on first use
+            # Initialize on first use with minimal memory settings
             _playwright = sync_playwright().start()
-            _browser = _playwright.chromium.launch(headless=True)
+            _browser = _playwright.chromium.launch(
+                headless=True,
+                args=[
+                    '--disable-dev-shm-usage',
+                    '--disable-gpu',
+                    '--disable-setuid-sandbox',
+                    '--no-sandbox',
+                    '--single-process',
+                    '--disable-extensions',
+                    '--disable-dev-tools',
+                    '--disable-software-rasterizer',
+                    '--ignore-certificate-errors',
+                ]
+            )
     return _browser
 
 def _close_resources():
@@ -58,11 +71,12 @@ atexit.register(_close_resources)
 def generate_receipt_pdf(request, template_name, context):
     """Generate PDF from receipt template using a shared Playwright browser."""
     browser = _get_browser()
-    page = browser.new_page(viewport={'width': 430, 'height': 932})
+    page = browser.new_page(viewport={'width': 430, 'height': 932}, java_script_enabled=False)
     try:
         html_content = render(request, template_name, context).content.decode()
         page.set_content(html_content)
-        page.wait_for_timeout(1000)
+        # Reduce timeout to avoid hanging
+        page.wait_for_timeout(500)
         with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
             page.pdf(path=tmp.name, width="430px", format='A4')
             tmp_path = tmp.name
@@ -73,19 +87,20 @@ def generate_receipt_pdf(request, template_name, context):
 def generate_receipt_image(request, template_name, context):
     """Generate image from receipt template using a shared Playwright browser."""
     browser = _get_browser()
-    page = browser.new_page(viewport={'width': 430, 'height': 932})
+    page = browser.new_page(viewport={'width': 430, 'height': 932}, java_script_enabled=False)
     try:
         page.set_extra_http_headers({
             'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1'
         })
         html_content = render(request, template_name, context).content.decode()
         page.set_content(html_content)
-        page.wait_for_load_state('networkidle')
+        # Shorter timeout to avoid hanging
+        page.wait_for_load_state('networkidle', timeout=5000)
         try:
-            page.wait_for_selector('img', timeout=5000)
+            page.wait_for_selector('img', timeout=3000)
         except:
             pass
-        page.wait_for_timeout(2000)
+        page.wait_for_timeout(1000)
         with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
             page.screenshot(path=tmp.name, full_page=True)
             tmp_path = tmp.name
