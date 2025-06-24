@@ -7,6 +7,9 @@ from django.utils import timezone
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 import os
+from playwright.sync_api import sync_playwright
+import atexit
+import tempfile
 
 from .models import (
     DebitBankReceipt,
@@ -23,73 +26,50 @@ from .forms import (
     DepositCryptoReceiptForm
 )
 
-from playwright.sync_api import sync_playwright
-import tempfile
-from datetime import datetime
+# Global Playwright context and browser
+_playwright = sync_playwright().start()
+_global_browser = _playwright.chromium.launch(headless=True)
 
 def generate_receipt_pdf(request, template_name, context):
-    """Generate PDF from receipt template using Playwright with mobile viewport."""
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        # Create page with mobile viewport
-        page = browser.new_page(viewport={'width': 430, 'height': 932})  # iPhone 14 Pro Max dimensions
-        
-        # Render the template to HTML
+    """Generate PDF from receipt template using a shared Playwright browser."""
+    page = _global_browser.new_page(viewport={'width': 430, 'height': 932})
+    try:
         html_content = render(request, template_name, context).content.decode()
-        
-        # Create temp file
+        page.set_content(html_content)
+        page.wait_for_timeout(1000)
         with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
-            # Write HTML to temp file
-            page.set_content(html_content)
-            
-            # Wait for any lazy-loaded content and animations
-            page.wait_for_timeout(1000)
-            
-            # Generate PDF with mobile width
             page.pdf(path=tmp.name, width="430px", format='A4')
             tmp_path = tmp.name
-        
-        browser.close()
-        
         return tmp_path
+    finally:
+        page.close()
 
 def generate_receipt_image(request, template_name, context):
-    """Generate image from receipt template using Playwright with mobile viewport."""
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        # Create page with mobile viewport
-        page = browser.new_page(viewport={'width': 430, 'height': 932})  # iPhone 14 Pro Max dimensions
-        
-        # Set mobile user agent
+    """Generate image from receipt template using a shared Playwright browser."""
+    page = _global_browser.new_page(viewport={'width': 430, 'height': 932})
+    try:
         page.set_extra_http_headers({
             'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1'
         })
-          # Render the template to HTML
         html_content = render(request, template_name, context).content.decode()
         page.set_content(html_content)
-        
-        # Wait for page to load completely
         page.wait_for_load_state('networkidle')
-        
-        # Wait for images to load if they exist (with timeout)
         try:
-            page.wait_for_selector('img', timeout=5000)  # 5 second timeout
+            page.wait_for_selector('img', timeout=5000)
         except:
-            # No images found, continue without waiting
             pass
-        
-        # Wait for any lazy-loaded content and animations
         page.wait_for_timeout(2000)
-        
-        # Create temp file
         with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
-            # Generate image with mobile dimensions
             page.screenshot(path=tmp.name, full_page=True)
             tmp_path = tmp.name
-        
-        browser.close()
-        
         return tmp_path
+    finally:
+        page.close()
+
+def _close_browser():
+    _global_browser.close()
+    _playwright.stop()
+atexit.register(_close_browser)
 
 def get_receipt_urls(request, receipt_category, receipt_type, receipt_id):
     """Helper function to generate receipt URLs"""
