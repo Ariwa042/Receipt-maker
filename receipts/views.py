@@ -10,6 +10,7 @@ import os
 from playwright.sync_api import sync_playwright
 import atexit
 import tempfile
+from asgiref.sync import sync_to_async
 
 from .models import (
     DebitBankReceipt,
@@ -86,7 +87,7 @@ def is_image_format(format_str):
     return format_str.lower() in ['img', 'image', 'png']
 
 @login_required
-def create_debit_bank_receipt(request):
+async def create_debit_bank_receipt(request):
     if request.method == 'POST':
         form = DebitBankReceiptForm(request.POST)
         if form.is_valid():
@@ -115,7 +116,7 @@ def create_debit_bank_receipt(request):
             
             if not is_image_format(format):
                 # Generate PDF
-                pdf_path = generate_receipt_pdf(request, template_name, context)
+                pdf_path = await sync_to_async(generate_receipt_pdf)(request, template_name, context)
                 with open(pdf_path, 'rb') as f:
                     response = HttpResponse(f.read(), content_type='application/pdf')
                     response['Content-Disposition'] = f'attachment; filename="debit_receipt_{receipt.id}.pdf"'
@@ -123,7 +124,7 @@ def create_debit_bank_receipt(request):
                 return response
             else:  # image
                 # Generate image
-                img_path = generate_receipt_image(request, template_name, context)
+                img_path = await sync_to_async(generate_receipt_image)(request, template_name, context)
                 with open(img_path, 'rb') as f:
                     response = HttpResponse(f.read(), content_type='image/png')
                     response['Content-Disposition'] = f'attachment; filename="debit_receipt_{receipt.id}.png"'
@@ -135,7 +136,7 @@ def create_debit_bank_receipt(request):
     return render(request, 'receipts/bank_debit_receipt_form.html', {'form': form})
 
 @login_required
-def create_credit_bank_receipt(request):
+async def create_credit_bank_receipt(request):
     if request.method == 'POST':
         form = CreditBankReceiptForm(request.POST)
         if form.is_valid():
@@ -167,7 +168,7 @@ def create_credit_bank_receipt(request):
             
             if not is_image_format(format):
                 # Generate PDF
-                pdf_path = generate_receipt_pdf(request, template_name, context)
+                pdf_path = await sync_to_async(generate_receipt_pdf)(request, template_name, context)
                 with open(pdf_path, 'rb') as f:
                     response = HttpResponse(f.read(), content_type='application/pdf')
                     response['Content-Disposition'] = f'attachment; filename="credit_receipt_{receipt.id}.pdf"'
@@ -175,7 +176,7 @@ def create_credit_bank_receipt(request):
                 return response
             else:
                 # Generate image
-                img_path = generate_receipt_image(request, template_name, context)
+                img_path = await sync_to_async(generate_receipt_image)(request, template_name, context)
                 with open(img_path, 'rb') as f:
                     response = HttpResponse(f.read(), content_type='image/png')
                     response['Content-Disposition'] = f'attachment; filename="credit_receipt_{receipt.id}.png"'
@@ -187,7 +188,7 @@ def create_credit_bank_receipt(request):
     return render(request, 'receipts/bank_credit_receipt_form.html', {'form': form})
 
 @login_required
-def create_crypto_withdrawal_receipt(request):
+async def create_crypto_withdrawal_receipt(request):
     if request.method == 'POST':
         form = WithdrawalCryptoReceiptForm(request.POST)
         if form.is_valid():
@@ -219,7 +220,7 @@ def create_crypto_withdrawal_receipt(request):
             
             if not is_image_format(format):
                 # Generate PDF
-                pdf_path = generate_receipt_pdf(request, template_name, context)
+                pdf_path = await sync_to_async(generate_receipt_pdf)(request, template_name, context)
                 with open(pdf_path, 'rb') as f:
                     response = HttpResponse(f.read(), content_type='application/pdf')
                     response['Content-Disposition'] = f'attachment; filename="withdrawal_receipt_{receipt.id}.pdf"'
@@ -227,7 +228,7 @@ def create_crypto_withdrawal_receipt(request):
                 return response
             else:
                 # Generate image
-                img_path = generate_receipt_image(request, template_name, context)
+                img_path = await sync_to_async(generate_receipt_image)(request, template_name, context)
                 with open(img_path, 'rb') as f:
                     response = HttpResponse(f.read(), content_type='image/png')
                     response['Content-Disposition'] = f'attachment; filename="withdrawal_receipt_{receipt.id}.png"'
@@ -239,7 +240,7 @@ def create_crypto_withdrawal_receipt(request):
     return render(request, 'receipts/crypto_withdrawal_receipt_form.html', {'form': form})
 
 @login_required
-def create_crypto_deposit_receipt(request):
+async def create_crypto_deposit_receipt(request):
     if request.method == 'POST':
         form = DepositCryptoReceiptForm(request.POST)
         if form.is_valid():
@@ -271,7 +272,7 @@ def create_crypto_deposit_receipt(request):
             
             if not is_image_format(format):
                 # Generate PDF
-                pdf_path = generate_receipt_pdf(request, template_name, context)
+                pdf_path = await sync_to_async(generate_receipt_pdf)(request, template_name, context)
                 with open(pdf_path, 'rb') as f:
                     response = HttpResponse(f.read(), content_type='application/pdf')
                     response['Content-Disposition'] = f'attachment; filename="deposit_receipt_{receipt.id}.pdf"'
@@ -279,7 +280,7 @@ def create_crypto_deposit_receipt(request):
                 return response
             else:
                 # Generate image
-                img_path = generate_receipt_image(request, template_name, context)
+                img_path = await sync_to_async(generate_receipt_image)(request, template_name, context)
                 with open(img_path, 'rb') as f:
                     response = HttpResponse(f.read(), content_type='image/png')
                     response['Content-Disposition'] = f'attachment; filename="deposit_receipt_{receipt.id}.png"'
