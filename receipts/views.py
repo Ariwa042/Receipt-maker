@@ -300,7 +300,7 @@ def get_exchange_template_path(receipt_type, exchange_type):
     return f'receipts/exchanges/{exchange_type.lower()}/{receipt_type}_receipt.html'
 
 @login_required
-def preview_receipt(request, receipt_category, receipt_type, receipt_id):
+async def preview_receipt(request, receipt_category, receipt_type, receipt_id):
     """Preview and handle download requests for receipts."""
     # Get the appropriate receipt model and template
     if receipt_category == 'bank':
@@ -326,16 +326,14 @@ def preview_receipt(request, receipt_category, receipt_type, receipt_id):
         context = {'receipt': receipt, 'request': request}
         
         if not is_image_format(format):
-            # Generate PDF
-            pdf_path = generate_receipt_pdf(request, template_name, context)
+            pdf_path = await sync_to_async(generate_receipt_pdf)(request, template_name, context)
             with open(pdf_path, 'rb') as f:
                 response = HttpResponse(f.read(), content_type='application/pdf')
                 response['Content-Disposition'] = f'attachment; filename="{receipt_type}_receipt_{receipt.id}.pdf"'
             os.unlink(pdf_path)  # Clean up temp file
             return response
         else:
-            # Generate image
-            img_path = generate_receipt_image(request, template_name, context)
+            img_path = await sync_to_async(generate_receipt_image)(request, template_name, context)
             with open(img_path, 'rb') as f:
                 response = HttpResponse(f.read(), content_type='image/png')
                 response['Content-Disposition'] = f'attachment; filename="{receipt_type}_receipt_{receipt.id}.png"'
