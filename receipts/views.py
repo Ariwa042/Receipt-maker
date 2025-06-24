@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 import os
+import threading
 from playwright.sync_api import sync_playwright
 import atexit
 import tempfile
@@ -25,13 +26,39 @@ from .forms import (
     DepositCryptoReceiptForm
 )
 
-# Global Playwright context and browser
-_playwright = sync_playwright().start()
-_global_browser = _playwright.chromium.launch(headless=True)
+# Threading lock for thread-safe Playwright access
+_lock = threading.RLock()
+_playwright = None
+_browser = None
+
+def _get_browser():
+    """Get or create the global browser instance in a thread-safe way."""
+    global _playwright, _browser
+    with _lock:
+        if _browser is None or _playwright is None:
+            # Initialize on first use
+            _playwright = sync_playwright().start()
+            _browser = _playwright.chromium.launch(headless=True)
+    return _browser
+
+def _close_resources():
+    """Clean up Playwright resources."""
+    global _playwright, _browser
+    with _lock:
+        if _browser is not None:
+            _browser.close()
+            _browser = None
+        if _playwright is not None:
+            _playwright.stop()
+            _playwright = None
+
+# Register cleanup function to run at exit
+atexit.register(_close_resources)
 
 def generate_receipt_pdf(request, template_name, context):
     """Generate PDF from receipt template using a shared Playwright browser."""
-    page = _global_browser.new_page(viewport={'width': 430, 'height': 932})
+    browser = _get_browser()
+    page = browser.new_page(viewport={'width': 430, 'height': 932})
     try:
         html_content = render(request, template_name, context).content.decode()
         page.set_content(html_content)
@@ -45,7 +72,8 @@ def generate_receipt_pdf(request, template_name, context):
 
 def generate_receipt_image(request, template_name, context):
     """Generate image from receipt template using a shared Playwright browser."""
-    page = _global_browser.new_page(viewport={'width': 430, 'height': 932})
+    browser = _get_browser()
+    page = browser.new_page(viewport={'width': 430, 'height': 932})
     try:
         page.set_extra_http_headers({
             'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1'
@@ -66,8 +94,8 @@ def generate_receipt_image(request, template_name, context):
         page.close()
 
 def _close_browser():
-    _global_browser.close()
-    _playwright.stop()
+    """Clean up at exit by calling our cleanup function."""
+    _close_resources()
 atexit.register(_close_browser)
 
 def get_receipt_urls(request, receipt_category, receipt_type, receipt_id):
