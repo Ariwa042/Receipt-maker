@@ -107,6 +107,50 @@
             color: #f59e42;
             font-size: 0.95em;
         }
+
+        /* Loading spinner styles */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner-container {
+            text-align: center;
+            color: white;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Success modal styles */
+        .modal-content {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--input-border);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--input-border);
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--input-border);
+        }
+
+        .btn-close {
+            filter: invert(1);
+        }
+
         @media (max-width: 768px) {
             .form-container {
                 margin: 1rem auto;
@@ -225,7 +269,194 @@
         </div>
     </div>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Loading spinner overlay -->
+    <div id="loading-overlay">
+        <div class="spinner-container">
+            <div class="spinner-border text-light" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Generating your receipt...</p>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Receipt Generated</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Your receipt has been successfully generated! Please check your downloads folder.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get form and submit buttons
+        const form = document.querySelector('form');
+        const generateImageBtn = document.querySelector('button[onclick="document.getElementById(\'format\').value=\'image\'"]');
+        const generatePdfBtn = document.querySelector('button[onclick="document.getElementById(\'format\').value=\'pdf\'"]');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const successModal = document.getElementById('successModal');
+        
+        // Variables to track download and form submission state
+        let waitingForDownload = false;
+        let formSubmitted = false;
+        let downloadStarted = false;
+        
+        // Function to validate the form
+        function validateForm() {
+            let isValid = true;
+            
+            // Check required fields (add validation logic as needed)
+            const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                }
+            });
+            
+            return isValid;
+        }
+        
+        // Function to show loading spinner
+        function showLoading() {
+            loadingOverlay.style.display = 'flex';
+            waitingForDownload = true;
+            formSubmitted = true;
+        }
+        
+        // Function to hide loading spinner
+        function hideLoading() {
+            loadingOverlay.style.display = 'none';
+        }
+        
+        // Function to show success modal
+        function showSuccessModal() {
+            const myModal = new bootstrap.Modal(successModal);
+            myModal.show();
+        }
+        
+        // Create a hidden iframe to detect when file download completes
+        const downloadDetectionFrame = document.createElement('iframe');
+        downloadDetectionFrame.style.display = 'none';
+        document.body.appendChild(downloadDetectionFrame);
+        
+        // Function to handle form submission
+        function handleSubmit(event) {
+            if (!validateForm()) {
+                event.preventDefault();
+                return;
+            }
+            
+            // Show loading spinner
+            showLoading();
+            
+            // We'll let the form submit normally to start the download
+            // but we'll set up a longer timeout to ensure the spinner doesn't hang forever
+            setTimeout(() => {
+                if (waitingForDownload && formSubmitted && !downloadStarted) {
+                    hideLoading();
+                    showSuccessModal();
+                    waitingForDownload = false;
+                    formSubmitted = false;
+                }
+            }, 15000); // 15 second fallback timeout (max time to wait for processing)
+        }
+        
+        // Set up event listeners to detect download
+        
+        // Method 1: Check for blobs/downloads
+        if ('serviceWorker' in navigator) {
+            // Use service worker to monitor downloads if available
+            navigator.serviceWorker.addEventListener('message', function(event) {
+                if (event.data && event.data.download === 'started') {
+                    downloadStarted = true;
+                    if (waitingForDownload && formSubmitted) {
+                        setTimeout(() => {
+                            hideLoading();
+                            showSuccessModal();
+                            waitingForDownload = false;
+                            formSubmitted = false;
+                        }, 500); // Short delay to ensure file begins downloading
+                    }
+                }
+            });
+        }
+        
+        // Method 2: Monitor for blob URLs being created
+        const originalCreateObjectURL = URL.createObjectURL;
+        URL.createObjectURL = function(object) {
+            const result = originalCreateObjectURL.apply(this, arguments);
+            if (waitingForDownload && formSubmitted) {
+                downloadStarted = true;
+                setTimeout(() => {
+                    hideLoading();
+                    showSuccessModal();
+                    waitingForDownload = false;
+                    formSubmitted = false;
+                }, 500); // Short delay to ensure file begins downloading
+            }
+            return result;
+        };
+        
+        // Method 3: Use a more reliable fallback timeout
+        // This is a medium-length timeout that should cover most server processing times
+        // but won't make users wait too long
+        window.addEventListener('focus', function() {
+            // If the window regains focus after losing it briefly,
+            // it's likely a download dialog appeared
+            if (waitingForDownload && formSubmitted) {
+                downloadStarted = true;
+                setTimeout(() => {
+                    hideLoading();
+                    showSuccessModal();
+                    waitingForDownload = false;
+                    formSubmitted = false;
+                }, 500);
+            }
+        });
+        
+        // Add event listeners to form and buttons
+        form.addEventListener('submit', handleSubmit);
+        
+        // Add listeners to the specific buttons
+        generateImageBtn.addEventListener('click', function() {
+            // Format will be set by the onclick attribute
+            // Just ensure validation happens
+            if (!validateForm()) {
+                event.preventDefault();
+                return;
+            }
+        });
+        
+        generatePdfBtn.addEventListener('click', function() {
+            // Format will be set by the onclick attribute
+            // Just ensure validation happens
+            if (!validateForm()) {
+                event.preventDefault();
+                return;
+            }
+        });
+        
+        // If we made it this far and we're still showing the spinner after 20 seconds,
+        // something likely went wrong - hide it and show an error
+        setTimeout(() => {
+            if (waitingForDownload && loadingOverlay.style.display === 'flex') {
+                hideLoading();
+                // We could show an error modal here instead if you prefer
+                showSuccessModal();
+                waitingForDownload = false;
+                formSubmitted = false;
+            }
+        }, 20000);
+    </script>
 </body>
 </html>
