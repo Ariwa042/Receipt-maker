@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.urls import reverse
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib.auth import get_user_model
 import shortuuid
 from .models import XPPackage, Payment, Payment_account, Cryptocurrency
 
@@ -97,11 +100,13 @@ def confirm_payment(request):
     except Payment.DoesNotExist:
         messages.error(request, 'Payment not found.')
         return redirect('payments:package_list')
-        
-    # For bank transfers, set to completed (you might want to change this in production)
+          # For bank transfers, set to completed (you might want to change this in production)
     if payment.payment_method == 'bank':
         payment.status = 'completed'
         payment.save()
+    
+    # Send email notification to admins about the new payment
+    send_admin_notification(payment)
     
     # Clean up session
     if 'payment_info' in request.session:
@@ -116,3 +121,55 @@ def payment_success(request, payment_id):
     return render(request, 'payments/payment_success.html', {
         'payment': payment
     })
+
+def send_admin_notification(payment):
+    """Send email notification to all admin users about a new payment"""
+    User = get_user_model()
+    admin_emails = User.objects.filter(is_staff=True, is_active=True).values_list('email', flat=True)
+    
+    # Filter out empty emails
+    admin_emails = [email for email in admin_emails if email]
+    
+    if not admin_emails:
+        # No admin emails found, nothing to send
+        return False
+    
+    # Get the payment details
+    payment_method = dict(Payment.PAYMENT_METHOD_CHOICES).get(payment.payment_method, payment.payment_method)
+    amount = payment.xp_package.price_in_naira if payment.payment_method == 'bank' else payment.xp_package.price_in_usd
+    currency = 'NGN' if payment.payment_method == 'bank' else 'USD'
+    
+    # Create the email subject and message
+    subject = f'New {payment_method} Payment Received - Needs Verification'
+    message = f"""
+Hello Admin,
+
+A new payment has been made and requires your attention:
+
+Payment ID: {payment.payment_id}
+User: {payment.user.username} ({payment.user.email})
+Package: {payment.xp_package.name}
+Amount: {amount} {currency}
+Payment Method: {payment_method}
+Status: {payment.status}
+Date: {payment.created_at}
+
+Please verify this payment as soon as possible.
+
+This is an automated message. Please do not reply.
+"""
+    
+    # Send the email
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@receipts.com',
+            recipient_list=admin_emails,
+            fail_silently=False,
+        )
+        return True
+    except Exception as e:
+        # Log the error but don't crash the view
+        print(f"Failed to send admin notification email: {str(e)}")
+        return False
