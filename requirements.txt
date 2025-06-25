@@ -1,14 +1,14 @@
 Django==4.2
-django-crispy-forms==2.1
-crispy-bootstrap4==2023.1
-shortuuid==1.0.11
-playwright==1.40.0
-Pillow==10.1.0
-python-dotenv==1.0.0
+django-crispy-forms
+crispy-bootstrap4
+shortuuid
+playwright
+Pillow
+python-dotenv
 whitenoise==6.6.0
-gunicorn==21.2.0
-psycopg2-binary==2.9.9
-dj-database-url==2.1.0
+gunicorn
+psycopg2-binary
+dj-database-url
 
 # Development dependencies
 django-debug-toolbar==4.2.0
