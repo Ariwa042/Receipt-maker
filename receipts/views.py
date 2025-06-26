@@ -7,9 +7,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 import os
-import threading
 from playwright.sync_api import sync_playwright
-import atexit
 import tempfile
 from .models import (
     DebitBankReceipt,
@@ -26,92 +24,73 @@ from .forms import (
     DepositCryptoReceiptForm
 )
 
-# Threading lock for thread-safe Playwright access
-_lock = threading.RLock()
-_playwright = None
-_browser = None
-
-def _get_browser():
-    """Get or create the global browser instance in a thread-safe way."""
-    global _playwright, _browser
-    with _lock:
-        if _browser is None or _playwright is None:
-            # Initialize on first use with minimal memory settings
-            _playwright = sync_playwright().start()
-            _browser = _playwright.chromium.launch(
-                headless=True,
-                args=[
-                    '--disable-dev-shm-usage',
-                    '--disable-gpu',
-                    '--disable-setuid-sandbox',
-                    '--no-sandbox',
-                    '--single-process',
-                    '--disable-extensions',
-                    '--disable-dev-tools',
-                    '--disable-software-rasterizer',
-                    '--ignore-certificate-errors',
-                ]
-            )
-    return _browser
-
-def _close_resources():
-    """Clean up Playwright resources."""
-    global _playwright, _browser
-    with _lock:
-        if _browser is not None:
-            _browser.close()
-            _browser = None
-        if _playwright is not None:
-            _playwright.stop()
-            _playwright = None
-
-# Register cleanup function to run at exit
-atexit.register(_close_resources)
+# Simple Playwright instance management - create new instance per request to avoid threading issues
 
 def generate_receipt_pdf(request, template_name, context):
-    """Generate PDF from receipt template using a shared Playwright browser."""
-    browser = _get_browser()
-    page = browser.new_page(viewport={'width': 430, 'height': 932}, java_script_enabled=False)
-    try:
-        html_content = render(request, template_name, context).content.decode()
-        page.set_content(html_content)
-        # Reduce timeout to avoid hanging
-        page.wait_for_timeout(500)
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
-            page.pdf(path=tmp.name, width="430px", format='A4')
-            tmp_path = tmp.name
-        return tmp_path
-    finally:
-        page.close()
+    """Generate PDF from receipt template using a new Playwright browser instance per request."""
+    with sync_playwright() as p:
+        browser = p.chromium.launch(
+            headless=True,
+            args=[
+                '--disable-dev-shm-usage',
+                '--disable-gpu',
+                '--disable-setuid-sandbox',
+                '--no-sandbox',
+                '--single-process',
+                '--disable-extensions',
+                '--disable-dev-tools',
+                '--disable-software-rasterizer',
+                '--ignore-certificate-errors',
+            ]
+        )
+        try:
+            page = browser.new_page(viewport={'width': 430, 'height': 932}, java_script_enabled=False)
+            html_content = render(request, template_name, context).content.decode()
+            page.set_content(html_content)
+            page.wait_for_timeout(500)
+            with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+                page.pdf(path=tmp.name, width="430px", format='A4')
+                tmp_path = tmp.name
+            return tmp_path
+        finally:
+            browser.close()
 
 def generate_receipt_image(request, template_name, context):
-    """Generate image from receipt template using a shared Playwright browser."""
-    browser = _get_browser()
-    page = browser.new_page(viewport={'width': 430, 'height': 932}, java_script_enabled=False)
-    try:
-        page.set_extra_http_headers({
-            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1'
-        })
-        html_content = render(request, template_name, context).content.decode()
-        page.set_content(html_content)
-        # Shorter timeout to avoid hanging
-        page.wait_for_load_state('networkidle', timeout=5000)
+    """Generate image from receipt template using a new Playwright browser instance per request."""
+    with sync_playwright() as p:
+        browser = p.chromium.launch(
+            headless=True,
+            args=[
+                '--disable-dev-shm-usage',
+                '--disable-gpu',
+                '--disable-setuid-sandbox',
+                '--no-sandbox',
+                '--single-process',
+                '--disable-extensions',
+                '--disable-dev-tools',
+                '--disable-software-rasterizer',
+                '--ignore-certificate-errors',
+            ]
+        )
         try:
-            page.wait_for_selector('img', timeout=3000)
-        except:
-            pass
-        page.wait_for_timeout(1000)
-        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
-            page.screenshot(path=tmp.name, full_page=True)
-            tmp_path = tmp.name
-        return tmp_path
-    finally:
-        page.close()
-
-def _close_browser():
-    """Clean up at exit by calling our cleanup function."""
-    _close_resources()
-atexit.register(_close_browser)
+            page = browser.new_page(viewport={'width': 430, 'height': 932}, java_script_enabled=False)
+            page.set_extra_http_headers({
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1'
+            })
+            html_content = render(request, template_name, context).content.decode()
+            page.set_content(html_content)
+            page.wait_for_load_state('networkidle', timeout=5000)
+            try:
+                page.wait_for_selector('img', timeout=3000)
+            except:
+                pass
+            page.wait_for_timeout(1000)
+            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
+                page.screenshot(path=tmp.name, full_page=True)
+                tmp_path = tmp.name
+            return tmp_path
+        finally:
+            browser.close()
 
 def get_receipt_urls(request, receipt_category, receipt_type, receipt_id):
     """Helper function to generate receipt URLs"""

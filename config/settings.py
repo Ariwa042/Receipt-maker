@@ -29,9 +29,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-^)_f0m!i+50ri-=s1yflvh(w6#9dzn%twb&gx$g8z=9h%s@$m1')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'https://fake-receipt.onrender.com, fake-receipt.onrender.com').split(',')
+ALLOWED_HOSTS = os.environ.get('*', 'https://fake-receipt.onrender.com, fake-receipt.onrender.com').split(',')
 
 
 # Application definition
@@ -220,7 +220,7 @@ if not DEBUG:
 
 # Playwright-specific settings
 PLAYWRIGHT_HEADLESS = True
-PLAYWRIGHT_BROWSERS_PATH = os.environ.get('PLAYWRIGHT_BROWSERS_PATH', None)
+
 
 # Email settings
 EMAIL_BACKEND = os.environ.get(
