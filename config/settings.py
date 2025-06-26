@@ -31,7 +31,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-^)_f0m!i+50ri-=s1yflv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = ('fake-receipt.onrender.com')
+ALLOWED_HOSTS = ['fake-receipt.onrender.com']
 
 
 # Application definition
