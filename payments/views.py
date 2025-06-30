@@ -123,7 +123,7 @@ def payment_success(request, payment_id):
     })
 
 def send_admin_notification(payment):
-    """Send email notification to all admin users about a new payment"""
+    """Send email notification to all admin users about a new payment deposit"""
     User = get_user_model()
     admin_emails = User.objects.filter(is_staff=True, is_active=True).values_list('email', flat=True)
     
@@ -132,31 +132,53 @@ def send_admin_notification(payment):
     
     if not admin_emails:
         # No admin emails found, nothing to send
+        print("No admin emails found for payment notification")
         return False
     
     # Get the payment details
     payment_method = dict(Payment.PAYMENT_METHOD_CHOICES).get(payment.payment_method, payment.payment_method)
-    amount = payment.xp_package.price_in_naira if payment.payment_method == 'bank' else payment.xp_package.price_in_usd
-    currency = 'NGN' if payment.payment_method == 'bank' else 'USD'
+    
+    # Get amount and currency based on payment method
+    if payment.payment_method == 'bank':
+        amount = payment.xp_package.price_in_naira
+        currency = 'NGN'
+    else:  # crypto
+        amount = payment.xp_package.price_in_usdt if payment.xp_package.price_in_usdt else 'N/A'
+        currency = 'USDT'
+    
+    # Create package description
+    package_description = f"{payment.xp_package.xp_amount}XP Package"
     
     # Create the email subject and message
-    subject = f'New {payment_method} Payment Received - Needs Verification'
+    subject = f'🔔 New {payment_method} Deposit Received - Action Required'
     message = f"""
-Hello Admin,
+Dear Admin,
 
-A new payment has been made and requires your attention:
+A new deposit has been made by a user and requires your verification:
 
-Payment ID: {payment.payment_id}
-User: {payment.user.username} ({payment.user.email})
-Package: {payment.xp_package.name}
-Amount: {amount} {currency}
-Payment Method: {payment_method}
-Status: {payment.status}
-Date: {payment.created_at}
+═══════════════════════════════════════
+📋 DEPOSIT DETAILS
+═══════════════════════════════════════
 
-Please verify this payment as soon as possible.
+💳 Payment ID: {payment.payment_id}
+👤 User: {payment.user.username}
+📧 Email: {payment.user.email}
+💰 Amount: {amount} {currency}
+💳 Payment Method: {payment_method}
+📊 Status: {payment.status.upper()}
+📅 Date: {payment.created_at.strftime('%Y-%m-%d %H:%M:%S UTC')}
 
-This is an automated message. Please do not reply.
+═══════════════════════════════════════
+
+⚠️  ADMIN ACTION REQUIRED:
+Please log in to the admin panel to verify and approve this deposit.
+
+Direct Admin Link: {settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else 'fake-receipt.onrender.com'}/admin/
+
+This is an automated notification. Please do not reply to this email.
+
+Best regards,
+Receipt Generator System
 """
     
     # Send the email
@@ -165,11 +187,12 @@ This is an automated message. Please do not reply.
             subject=subject,
             message=message,
             from_email=settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@receipts.com',
-            recipient_list=admin_emails,
+            recipient_list=list(admin_emails),
             fail_silently=False,
         )
+        print(f"✅ Admin notification email sent successfully to {len(admin_emails)} admin(s)")
         return True
     except Exception as e:
         # Log the error but don't crash the view
-        print(f"Failed to send admin notification email: {str(e)}")
+        print(f"❌ Failed to send admin notification email: {str(e)}")
         return False
