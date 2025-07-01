@@ -102,7 +102,10 @@ def confirm_payment(request):
         return redirect('payments:package_list')
           # For bank transfers, set to completed (you might want to change this in production)
     if payment.payment_method == 'bank':
-        payment.status = 'completed'
+        payment.status = 'pending'
+
+    else:  # For crypto, set to completed
+        payment.status = 'pending'
         payment.save()
     
     # Send email notification to admins about the new payment
