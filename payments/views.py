@@ -176,7 +176,7 @@ A new deposit has been made by a user and requires your verification:
 ⚠️  ADMIN ACTION REQUIRED:
 Please log in to the admin panel to verify and approve this deposit.
 
-Direct Admin Link: {settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else 'fake-receipt.onrender.com'}/admin/
+Direct Admin Link: fake-receipt.onrender.com/admin/
 
 This is an automated notification. Please do not reply to this email.
 
