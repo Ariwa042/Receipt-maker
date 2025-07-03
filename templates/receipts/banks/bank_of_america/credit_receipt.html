@@ -171,38 +171,38 @@
                 <div class="detail-row">
                     <div class="detail-label">From</div>
                     <div class="detail-value">
-                        <div class="detail-primary">Advantage Savings - 3740</div>
-                        <div class="detail-secondary">Available balance $1,076.45</div>
+                        <div class="detail-primary">{{ receipt.sender_account_type|default:"Advantage Savings" }} - {{ receipt.sender_account_number|slice:"-4"|default:"3740" }}</div>
+                        <div class="detail-secondary">Available balance ${{ receipt.sender_balance|floatformat:2|default:"1,076.45" }}</div>
                     </div>
                 </div>
 
                 <div class="detail-row">
                     <div class="detail-label">To</div>
                     <div class="detail-value">
-                        <div class="detail-primary">BankAmericard Platinum</div>
-                        <div class="detail-primary">Plus Mastercard - 5271</div>
-                        <div class="detail-secondary">Current balance $220.90</div>
+                        <div class="detail-primary">{{ receipt.recipient_account_type|default:"BankAmericard Platinum" }}</div>
+                        <div class="detail-primary">{{ receipt.recipient_account_name|default:"Plus Mastercard" }} - {{ receipt.your_account_number|slice:"-4"|default:"5271" }}</div>
+                        <div class="detail-secondary">Current balance ${{ receipt.recipient_balance|floatformat:2|default:"220.90" }}</div>
                     </div>
                 </div>
 
                 <div class="detail-row">
                     <div class="detail-label">Amount</div>
                     <div class="detail-value">
-                        <div class="amount-value">$280.00</div>
+                        <div class="amount-value">${{ receipt.amount|floatformat:2 }}</div>
                     </div>
                 </div>
 
                 <div class="detail-row">
                     <div class="detail-label">Date</div>
                     <div class="detail-value">
-                        <div class="date-value">Feb 14</div>
+                        <div class="date-value">{{ receipt.created_at|date:"M d" }}</div>
                     </div>
                 </div>
 
                 <div class="detail-row">
                     <div class="detail-label">Confirmation #</div>
                     <div class="detail-value">
-                        <div class="confirmation-value">0186286595</div>
+                        <div class="confirmation-value">{{ receipt.transaction_id|default:"0186286595" }}</div>
                     </div>
                 </div>
             </div>

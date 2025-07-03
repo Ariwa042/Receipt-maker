@@ -1,0 +1,359 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capitec Bank Payment Notification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: #333;
+            line-height: 1.4;
+            padding: 20px;
+            font-size: 11px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 100px;
+            height: 40px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .company-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            letter-spacing: 2px;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .left-section {
+            flex: 1;
+        }
+
+        .right-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .bank-slip {
+            border: 2px solid #ccc;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            transform: rotate(-5deg);
+            background-color: #fafafa;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .bank-slip h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .bank-slip .date {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .bank-slip .details {
+            font-size: 10px;
+            color: #666;
+        }
+
+        .qr-code {
+            width: 120px;
+            height: 120px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSJ3aGl0ZSIvPgo8ZyBmaWxsPSJibGFjayI+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSI4IiBoZWlnaHQ9IjgiLz4KPHJlY3QgeD0iMTYiIHk9IjAiIHdpZHRoPSI4IiBoZWlnaHQ9IjgiLz4KPHJlY3QgeD0iMzIiIHk9IjAiIHdpZHRoPSI4IiBoZWlnaHQ9IjgiLz4KPHJlY3QgeD0iNDgiIHk9IjAiIHdpZHRoPSI4IiBoZWlnaHQ9IjgiLz4KPHJlY3QgeD0iODAiIHk9IjAiIHdpZHRoPSI4IiBoZWlnaHQ9IjgiLz4KPHJlY3QgeD0iOTYiIHk9IjAiIHdpZHRoPSI4IiBoZWlnaHQ9IjgiLz4KPHJlY3QgeD0iMTEyIiB5PSIwIiB3aWR0aD0iOCIgaGVpZ2h0PSI4Ii8+CjxyZWN0IHg9IjAiIHk9IjE2IiB3aWR0aD0iOCIgaGVpZ2h0PSI4Ii8+CjxyZWN0IHg9IjQ4IiB5PSIxNiIgd2lkdGg9IjgiIGhlaWdodD0iOCIvPgo8cmVjdCB4PSI4MCIgeT0iMTYiIHdpZHRoPSI4IiBoZWlnaHQ9IjgiLz4KPHJlY3QgeD0iMTEyIiB5PSIxNiIgd2lkdGg9IjgiIGhlaWdodD0iOCIvPgo8L2c+Cjwvc3ZnPgo=') no-repeat center;
+            background-size: contain;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+        .qr-placeholder {
+            width: 120px;
+            height: 120px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .qr-pattern {
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, #000 0px, #000 2px, transparent 2px, transparent 4px),
+                repeating-linear-gradient(90deg, #000 0px, #000 2px, transparent 2px, transparent 4px);
+            opacity: 0.8;
+        }
+
+        .scan-info {
+            font-size: 8px;
+            color: #666;
+            text-align: center;
+        }
+
+        .address {
+            font-size: 10px;
+            color: #666;
+            text-align: right;
+            line-height: 1.3;
+        }
+
+        .greeting {
+            font-size: 12px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .notification-text {
+            font-size: 12px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .details-section {
+            margin-bottom: 20px;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .details-table td {
+            padding: 4px 0;
+            font-size: 11px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .details-table td:first-child {
+            font-weight: bold;
+            width: 150px;
+            color: #333;
+        }
+
+        .details-table td:last-child {
+            color: #666;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 12px;
+            margin: 15px 0 10px 0;
+            color: #333;
+        }
+
+        .important-notes {
+            font-size: 10px;
+            color: #666;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        .important-notes h4 {
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .footer {
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            text-align: center;
+            font-size: 9px;
+            color: #666;
+        }
+
+        .contact-info {
+            margin-bottom: 10px;
+        }
+
+        .disclaimer {
+            font-size: 8px;
+            color: #999;
+            line-height: 1.3;
+        }
+
+        .page-number {
+            text-align: right;
+            font-size: 8px;
+            color: #999;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Payment Notification</h1>
+            <div class="logo-section">
+                <div class="logo">
+                    <img src="{% static 'images/bank/capitec_logo.png' %}" alt="Capitec Bank">
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="left-section">
+                <div class="bank-slip">
+                    <h3>Capitec Bank</h3>
+                    <div class="date">{{ receipt.transaction_date|date:"d/m/Y" }}</div>
+                    <div class="details">Branch: {{ receipt.branch_code|default:"470010" }}</div>
+                    <div class="details">Version: {{ receipt.version|default:"9003" }}</div>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div class="qr-placeholder">
+                    <div class="qr-pattern"></div>
+                </div>
+                <div class="scan-info">
+                    <img src="{% static 'images/bank/capitec_qr.png' %}" alt="QR Code" style="width: 16px; height: 16px; margin-right: 4px;">
+                    SkyQR
+                    <span style="margin-left: 8px;">Mobile powered by Bluebean</span>
+                </div>
+                <div class="address">
+                    <strong>Capitec Bank Limited</strong><br>
+                    1 Merchant Road<br>
+                    Techno Park<br>
+                    Stellenbosch<br>
+                    7600
+                </div>
+            </div>
+        </div>
+
+        <div class="greeting">Dear Sir/Madam</div>
+        <div class="notification-text">Please take note that you made a payment from your account to {{ receipt.beneficiary_name|default:"BENEFICIARY" }}.</div>
+        <div class="notification-text">The payment details are as follows:</div>
+
+        <div class="details-section">
+            <table class="details-table">
+                <tr>
+                    <td>Notification number</td>
+                    <td>{{ receipt.notification_number|default:"97561" }}</td>
+                </tr>
+                <tr>
+                    <td>Payment date</td>
+                    <td>{{ receipt.transaction_date|date:"d/m/Y H:i" }}</td>
+                </tr>
+            </table>
+
+            <div class="section-title">Payment details</div>
+            <table class="details-table">
+                <tr>
+                    <td>Receipient name</td>
+                    <td>{{ receipt.beneficiary_name|default:"Louw en Da Silva" }}</td>
+                </tr>
+                <tr>
+                    <td>Receipient bank</td>
+                    <td>{{ receipt.beneficiary_bank|default:"ABSA Bank" }}</td>
+                </tr>
+                <tr>
+                    <td>Receipient account</td>
+                    <td>{{ receipt.beneficiary_account_number|default:"1990160482" }}</td>
+                </tr>
+                <tr>
+                    <td>Branch</td>
+                    <td>632005</td>
+                </tr>
+                <tr>
+                    <td>Payment type</td>
+                    <td>Regular payment</td>
+                </tr>
+                <tr>
+                    <td>Amount</td>
+                    <td>R {{ receipt.amount|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <td>Payment reference</td>
+                    <td>{{ receipt.transaction_id|default:"Ref-Kat49-0049-YJ" }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="important-notes">
+            <h4>IMPORTANT NOTES:</h4>
+            <p>Immediate payments to non-Capitec banking clients and regular payments made to Capitec clients will reflect in the beneficiaries account immediately.</p>
+            <br>
+            <p>Regular payments made to non-Capitec banking clients BEFORE 02:00 PM Monday to Friday, or BEFORE 09:00 AM on a Saturday should reflect in the beneficiary account the same banking day.</p>
+            <br>
+            <p>Regular payments made to non-Capitec banking clients AFTER 02:00 PM Monday to Friday, or AFTER 09:00 AM on a Saturday, or on a Sunday, or on a public holiday should reflect in the beneficiary account within 2 business days.</p>
+            <br>
+            <p>This is a notification that we received instruction to effect a payment and not a representation of any kind or guarantee that the amount has in fact been transferred or shall be available in the account. The processing of the payment may be delayed, which may impact on the timing of the availability of the funds.</p>
+            <br>
+            <p><strong>Remote Banking Services</strong></p>
+        </div>
+
+        <div class="footer">
+            <div class="contact-info">
+                <strong>24hr Client Care Centre:</strong> 0860 10 20 43 | <strong>ClientCare@capitecbank.co.za</strong> | <strong>capitecbank.co.za</strong>
+            </div>
+            <div class="disclaimer">
+                Capitec Bank is an authorised financial services provider (FSP46669) and registered credit provider (NCRCP13). Capitec Bank Limited Reg. No. 1980/003695/06<br>
+                <em>Please file/save this document for future reference/tax purposes, if required | FSP 46669 | NCRCP13 (administration)</em>
+            </div>
+            <div class="page-number">Page 1 of 1</div>
+        </div>
+    </div>
+</body>
+</html>

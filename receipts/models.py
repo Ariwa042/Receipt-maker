@@ -18,8 +18,11 @@ BANK_TEMPLATES= [
     ('fidelity_bank', 'Fidelity Bank'),
     ('google_pay', 'Google Pay'),
     ('paypal', 'PayPal'),
+    ('zelle', 'Zelle'),
+    ('cashapp', 'Cash App'),
     ('banco_popular', 'Banco Popular'),
     ('iptu', 'IPTU'),
+    ('capitec', 'Capitec Bank'),
     ('bank_of_america', 'Bank of America'),
 ]
 

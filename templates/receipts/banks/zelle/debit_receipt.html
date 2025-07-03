@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Sent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+            background-color: white;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 20px 0;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #8B5CF6 0%, #A855F7 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            fill: #666;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            background-color: #FF3B30;
+            border-radius: 50%;
+            font-size: 8px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .sign-off {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .lock-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .page-title {
+            font-size: 32px;
+            color: #333;
+            font-weight: 400;
+            margin-bottom: 40px;
+            padding-left: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            padding: 0 20px;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #34C759;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+        }
+
+        .checkmark {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        .recipient-info {
+            margin-bottom: 40px;
+        }
+
+        .recipient-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .recipient-details {
+            font-size: 16px;
+            color: #999;
+            font-weight: 400;
+        }
+
+        .amount-section {
+            margin-bottom: 40px;
+        }
+
+        .amount {
+            font-size: 76px;
+            font-weight: 400;
+            color: #333;
+            margin-bottom: 16px;
+            letter-spacing: -2px;
+        }
+
+        .purpose {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .availability-text {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.4;
+            margin-bottom: 50px;
+        }
+
+        .confirmation-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 0 10px;
+        }
+
+        .confirmation-label {
+            font-size: 16px;
+            color: #999;
+            font-weight: 400;
+        }
+
+        .confirmation-code {
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .done-button {
+            background-color: transparent;
+            border: 2px solid #333;
+            border-radius: 50px;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .done-button:hover {
+            background-color: #333;
+            color: white;
+        }
+
+        .done-button:active {
+            transform: scale(0.98);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .amount {
+                font-size: 76px;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Z</div>
+        <div class="header-right">
+            <div class="notification">
+                <svg class="notification-icon" viewBox="0 0 24 24">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                </svg>
+                <div class="notification-badge">1</div>
+            </div>
+            <div class="sign-off">
+                <svg class="lock-icon" viewBox="0 0 24 24">
+                    <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                </svg>
+                Sign off
+            </div>
+        </div>
+    </div>
+
+    <h1 class="page-title">Money sent</h1>
+
+    <div class="container">
+        <div class="success-icon">
+            <svg class="checkmark" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+        </div>
+
+        <div class="recipient-info">
+            <div class="recipient-name">Sent to {{ receipt.beneficiary_name|default:"Recipient" }}</div>
+            <div class="recipient-details">Enrolled as {{ receipt.beneficiary_name|upper }}</div>
+        </div>
+
+        <div class="amount-section">
+            <div class="amount">${{ receipt.amount|floatformat:2 }}</div>
+            <div class="purpose">{{ receipt.remark|default:"Payment" }}</div>
+        </div>
+
+        <div class="availability-text">
+            The money will be available in {{ receipt.beneficiary_name|default:"recipient" }}'s<br>
+            account typically within minutes
+        </div>
+
+        <div class="confirmation-section">
+            <div class="confirmation-label">CONFIRMATION</div>
+            <div class="confirmation-code">{{ receipt.transaction_id|default:"RP0RSJ2718A" }}</div>
+        </div>
+
+        <button class="done-button">Done</button>
+    </div>
+
+
+</body>
+</html>
