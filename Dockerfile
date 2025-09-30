@@ -55,13 +55,12 @@ RUN python manage.py collectstatic --noinput
 
 # Set up the entrypoint
 COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+
 
 # Expose port
 EXPOSE 8080
 
 # Set entrypoint
-ENTRYPOINT ["/docker-entrypoint.sh"]
 
 # Default command
 CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8080", "--workers", "2", "--threads", "1", "--timeout", "120"]
