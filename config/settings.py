@@ -31,7 +31,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-^)_f0m!i+50ri-=s1yflv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = ['8', 'fake-receipt.onrender.com']
+ALLOWED_HOSTS = ['*', 'fake-receipt-92945097390.europe-west1.run.app']
 
 
 # Application definition
@@ -174,7 +174,7 @@ AUTH_USER_MODEL = 'users.User'
 # CSRF settings - get from environment or use defaults
 CSRF_TRUSTED_ORIGINS = os.environ.get(
     'CSRF_TRUSTED_ORIGINS', 
-    'https://fake-receipt.onrender.com'
+    'https://fake-receipt-92945097390.europe-west1.run.app'
 ).split(',')
 
 # Jazzmin Settings
