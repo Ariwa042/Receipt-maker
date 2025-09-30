@@ -54,7 +54,6 @@ RUN python -m playwright install --with-deps chromium
 RUN python manage.py collectstatic --noinput
 
 # Set up the entrypoint
-COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 
 # Expose port
